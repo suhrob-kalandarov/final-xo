@@ -41,7 +41,7 @@ public class BotLauncher implements CommandLineRunner {
                     } else if (update.chosenInlineResult() != null) {
                         chosenInlineResultHandler.handle(update.chosenInlineResult());
 
-                    } else System.out.println("Unknown message - " + update);
+                    } else System.err.println("Unknown message -> " + update);
                 });
             }
             return UpdatesListener.CONFIRMED_UPDATES_ALL;

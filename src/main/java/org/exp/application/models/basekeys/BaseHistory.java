@@ -1,4 +1,4 @@
-package org.exp.application.models.base;
+package org.exp.application.models.basekeys;
 
 import jakarta.persistence.MappedSuperclass;
 import lombok.*;
