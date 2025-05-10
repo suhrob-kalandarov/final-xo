@@ -1,4 +1,4 @@
-package org.exp.finalxo.usekeys;
+package org.exp.application.usekeys;
 
 public interface DataHandler <T> {
     void handle(T t);
