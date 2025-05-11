@@ -13,6 +13,12 @@ public class MessageHandler implements DataHandler<Message> {
 
     @Override
     public void handle(Message message) {
+        String text = message.text();
+
+        if (text.equals("/start")) {
+
+
+        }
 
     }
 }
