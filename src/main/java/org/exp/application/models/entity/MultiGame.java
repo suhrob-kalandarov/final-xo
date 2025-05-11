@@ -3,7 +3,7 @@ package org.exp.application.models.entity;
 import jakarta.persistence.*;
 import lombok.*;
 import org.exp.application.models.basekeys.BaseGame;
-import org.exp.application.models.extra.Turn;
+import org.exp.application.models.enums.Turn;
 
 @Getter
 @Setter

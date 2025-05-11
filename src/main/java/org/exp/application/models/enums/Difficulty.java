@@ -1,4 +1,4 @@
-package org.exp.application.models.extra;
+package org.exp.application.models.enums;
 
 public enum Difficulty {
     EASY,

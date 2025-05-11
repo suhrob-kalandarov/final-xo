@@ -3,7 +3,7 @@ package org.exp.application.models.entity;
 import jakarta.persistence.*;
 import lombok.*;
 import org.exp.application.models.basekeys.BaseEntity;
-import org.exp.application.models.extra.BotLanguage;
+import org.exp.application.models.entity.extra.BotLanguage;
 
 @Getter
 @Setter

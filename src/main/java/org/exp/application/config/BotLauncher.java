@@ -5,10 +5,10 @@ import com.pengrad.telegrambot.UpdatesListener;
 import com.pengrad.telegrambot.model.Update;
 import lombok.RequiredArgsConstructor;
 import org.exp.application.Application;
-import org.exp.application.services.handlers.CallbackHandler;
-import org.exp.application.services.handlers.ChosenInlineResultHandler;
-import org.exp.application.services.handlers.InlineHandler;
-import org.exp.application.services.handlers.MessageHandler;
+import org.exp.application.bot.handlers.CallbackHandler;
+import org.exp.application.bot.handlers.ChosenInlineResultHandler;
+import org.exp.application.bot.handlers.InlineHandler;
+import org.exp.application.bot.handlers.MessageHandler;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 

@@ -1,4 +1,4 @@
-package org.exp.application.services.handlers;
+package org.exp.application.bot.handlers;
 
 import com.pengrad.telegrambot.model.CallbackQuery;
 import lombok.RequiredArgsConstructor;

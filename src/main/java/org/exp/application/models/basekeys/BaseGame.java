@@ -2,7 +2,7 @@ package org.exp.application.models.basekeys;
 
 import jakarta.persistence.*;
 import lombok.*;
-import org.exp.application.models.extra.GameStatus;
+import org.exp.application.models.enums.GameStatus;
 import org.exp.application.services.board.BoardConverter;
 
 import java.time.LocalDateTime;

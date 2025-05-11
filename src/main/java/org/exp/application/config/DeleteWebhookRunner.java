@@ -1,4 +1,4 @@
-package org.exp.application.config.ext;
+package org.exp.application.config;
 
 import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.request.DeleteWebhook;

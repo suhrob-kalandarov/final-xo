@@ -1,4 +1,4 @@
-package org.exp.application.services.processes;
+package org.exp.application.bot.processes;
 
 import com.pengrad.telegrambot.model.Message;
 import org.exp.application.usekeys.DataHandler;

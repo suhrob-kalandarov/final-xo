@@ -1,4 +1,4 @@
-package org.exp.application.models.extra;
+package org.exp.application.models.entity.extra;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
