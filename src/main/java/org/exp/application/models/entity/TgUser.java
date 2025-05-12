@@ -2,7 +2,7 @@ package org.exp.application.models.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
-import org.exp.application.models.basekeys.BaseEntity;
+import org.exp.application.models.basekeys.BaseDate;
 import org.exp.application.models.entity.extra.BotLanguage;
 
 @Getter
@@ -12,10 +12,14 @@ import org.exp.application.models.entity.extra.BotLanguage;
 @AllArgsConstructor
 @Entity
 @Table(name = "tg_users")
-public class TgUser extends BaseEntity {
+public class TgUser extends BaseDate {
+
+    @Id
+    private Long id;
 
     private String fullname;
     private String username;
+    private boolean _active;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "language_id")
