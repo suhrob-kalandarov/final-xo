@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class BoardChecker {
+
     public boolean checkWin(int[][] board, int player) {
         for (int i = 0; i < 3; i++)
             if (board[i][0] == player && board[i][1] == player && board[i][2] == player)

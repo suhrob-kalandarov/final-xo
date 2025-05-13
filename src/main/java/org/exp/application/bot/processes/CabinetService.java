@@ -18,8 +18,8 @@ public class CabinetService {
     public void menu(TgUser tgUser) {
         senderService.sendMessage(
                 tgUser.getId(),
-                "CABINET",
-                buttonService.cabinetMenuBtns()
+                "MAIN_MENU (HOME)",
+                buttonService.homeMenuBtns()
         );
     }
 

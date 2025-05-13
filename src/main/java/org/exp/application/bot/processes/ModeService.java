@@ -16,10 +16,10 @@ public class ModeService {
     private final TelegramButtonService buttonService;
 
     public void sendMainMenu(TgUser tgUser) {
-        senderService.sendMessage(tgUser.getId(), "MODE MENU", buttonService.modeMenuBtns());
+        senderService.sendMessage(tgUser.getId(), "MODE_MENU", buttonService.modeMenuBtns());
     }
 
-    public void sendPlayBotMenu(TgUser tgUser) {
-        senderService.sendMessage(tgUser.getId(), "", buttonService.chooseXO());
+    public void sendSignMenu(TgUser tgUser) {
+        senderService.sendMessage(tgUser.getId(), "CHOOSE_SIGN_MENU", buttonService.menuChooseXO());
     }
 }

@@ -31,10 +31,11 @@ public class CallbackHandler implements DataHandler<CallbackQuery> {
         } else if (data.equals("game-mode")) {
             modeService.sendMainMenu(tgUser);
 
-        } else if (data.startsWith("play-with_bot")) {
-            modeService.sendPlayBotMenu(tgUser);
+        } else if (data.equals("play-with_bot")) {
+            modeService.sendSignMenu(tgUser);
 
         } else if (data.startsWith("play-with_")) {
+
 
         }
     }

@@ -16,7 +16,7 @@ public class TelegramButtonService {
     private final BotLanguageRepository botLanguageRepo;
     private final TgUserService tgUserService;
 
-    public Keyboard cabinetMenuBtns() { // Long userId
+    public Keyboard homeMenuBtns() {
         return new InlineKeyboardMarkup(
                 new InlineKeyboardButton("Game Mode").callbackData("game-mode")
         ).addRow(
@@ -35,10 +35,20 @@ public class TelegramButtonService {
         );
     }
 
-    public Keyboard chooseXO() {
+    public Keyboard menuChooseXO() {
         return new InlineKeyboardMarkup(
                 new InlineKeyboardButton("X").callbackData("play-with_x"),
                 new InlineKeyboardButton("O").callbackData("play-with_o")
+        );
+    }
+
+    public Keyboard botGameMenuBtns() {
+        return new InlineKeyboardMarkup(
+                new InlineKeyboardButton("Play").callbackData("play-with_x")
+        ).addRow(
+                new InlineKeyboardButton("Difficulty").callbackData("difficulty")
+        ).addRow(
+                new InlineKeyboardButton("Home").callbackData("back-to_home")
         ).addRow(
                 new InlineKeyboardButton("Back").callbackData("back-to_mode-cabinet")
         );

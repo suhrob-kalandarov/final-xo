@@ -19,6 +19,10 @@ public class TgUser extends BaseDate {
 
     private String fullname;
     private String username;
+
+    @Column(name = "message_id")
+    private Integer messageId;
+
     private boolean _active;
 
     @ManyToOne(fetch = FetchType.LAZY)
