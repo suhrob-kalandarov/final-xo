@@ -1,8 +1,9 @@
-package org.exp.application.models.entity;
+package org.exp.application.models.entity.game;
 
 import jakarta.persistence.*;
 import lombok.*;
 import org.exp.application.models.basekeys.BaseGame;
+import org.exp.application.models.entity.TgUser;
 import org.exp.application.models.enums.Difficulty;
 
 @Getter

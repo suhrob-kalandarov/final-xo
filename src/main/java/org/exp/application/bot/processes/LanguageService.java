@@ -2,8 +2,8 @@ package org.exp.application.bot.processes;
 
 import lombok.RequiredArgsConstructor;
 import org.exp.application.models.entity.TgUser;
-import org.exp.application.models.entity.extra.BotLanguage;
-import org.exp.application.repositories.BotLanguageRepository;
+import org.exp.application.models.entity.message.Language;
+import org.exp.application.repositories.LanguageRepository;
 import org.exp.application.services.TelegramButtonService;
 import org.exp.application.services.TelegramSenderService;
 import org.exp.application.services.main.TgUserService;
@@ -17,7 +17,9 @@ public class LanguageService {
     private final TelegramSenderService senderService;
     private final TelegramButtonService buttonService;
     private final TgUserService tgUserService;
-    private final BotLanguageRepository languageRepository;
+    private final LanguageRepository languageRepository;
+
+    private final ModeService modeService;
 
     public void sendLangMenu(Long userId) {
         senderService.sendMessage(userId, "Choose bot language:", buttonService.langMenuBtns());
@@ -25,17 +27,18 @@ public class LanguageService {
 
     public void setBotLanguage(Long userId, String data) {
         Long langId = Long.parseLong(data.split("_")[1]);
+        Language botLanguage = getById(langId);
 
-        BotLanguage botLanguage = getById(langId);
-
-        TgUser tgUser = SessionBuffer.sessionTgUsers.get(userId);
+        TgUser tgUser = tgUserService.getById(userId);
         tgUser.setLanguage(botLanguage);
         tgUserService.save(tgUser);
 
         System.out.println("Success set lang!");
+
+        modeService.sendMainMenu(userId);
     }
 
-    public BotLanguage getById(Long langId) {
+    public Language getById(Long langId) {
         return languageRepository.findById(langId)
                 .orElseThrow(() -> new RuntimeException("Language not found!"));
     }

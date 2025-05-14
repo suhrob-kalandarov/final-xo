@@ -3,7 +3,7 @@ package org.exp.application.models.entity;
 import jakarta.persistence.*;
 import lombok.*;
 import org.exp.application.models.basekeys.BaseDate;
-import org.exp.application.models.entity.extra.BotLanguage;
+import org.exp.application.models.entity.message.Language;
 
 @Getter
 @Setter
@@ -27,5 +27,5 @@ public class TgUser extends BaseDate {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "language_id")
-    private BotLanguage language;
+    private Language language;
 }

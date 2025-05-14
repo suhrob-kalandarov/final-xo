@@ -24,7 +24,7 @@ public interface Constants {
 
     String BOARD_MSG = "board_msg";
 
-    String USER_STATISTICS_MSG = "user_statistics_msg";
+    String USER_STATISTICS_MSG = "bot-game_statistics_msg";
     String SUPPORT_BTN = "support_btn";
 
     String DIFFICULTY_LEVEL_MSG = "difficulty_level_msg";

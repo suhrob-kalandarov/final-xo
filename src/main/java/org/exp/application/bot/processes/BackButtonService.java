@@ -3,23 +3,26 @@ package org.exp.application.bot.processes;
 import lombok.RequiredArgsConstructor;
 import org.exp.application.services.TelegramButtonService;
 import org.exp.application.services.TelegramSenderService;
-import org.exp.application.services.main.TgUserService;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class CabinetService {
+public class BackButtonService {
 
-    private final TgUserService tgUserService;
     private final TelegramSenderService senderService;
     private final TelegramButtonService buttonService;
 
-    public void menu(Long userId) {
-        Integer messageId = senderService.sendMessage(
-                userId,
-                "MAIN_MENU (HOME)",
-                buttonService.homeMenuBtns()
-        );
-        tgUserService.updateMessageId(userId, messageId);
+    private final CabinetService cabinetService;
+    private final ModeService modeService;
+
+    public void execute(String data, Long userId) {
+
+        if (data.equals("back-to_home")) {
+            cabinetService.menu(userId);
+
+        } else if (data.equals("back-to_mode-menu")) {
+            modeService.sendMainMenu(userId);
+
+        }
     }
 }

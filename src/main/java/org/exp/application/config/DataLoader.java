@@ -1,8 +1,8 @@
 package org.exp.application.config;
 
 import lombok.RequiredArgsConstructor;
-import org.exp.application.models.entity.extra.BotLanguage;
-import org.exp.application.repositories.BotLanguageRepository;
+import org.exp.application.models.entity.message.Language;
+import org.exp.application.repositories.LanguageRepository;
 import org.exp.application.repositories.TgUserRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Configuration;
@@ -14,22 +14,22 @@ import java.util.List;
 public class DataLoader implements CommandLineRunner {
 
     private final TgUserRepository tgUserRepository;
-    private final BotLanguageRepository languageRepository;
-    static BotLanguage lang3;
+    private final LanguageRepository languageRepository;
+    public static Language lang;
 
     @Override
     public void run(String... args) throws Exception {
 
         if (languageRepository.count() == 0) {
-            BotLanguage lang1 = new BotLanguage("Uzbekistan", "\uD83C\uDDFA\uD83C\uDDFF", "Uzbek", "uz");
-            BotLanguage lang2 = new BotLanguage("Russia", "\uD83C\uDDF7\uD83C\uDDFA", "Русский", "ru");
-            lang3 = new BotLanguage("America", "\uD83C\uDDFA\uD83C\uDDF8", "English", "en");
+            Language lang3 = new Language("\uD83C\uDDFA\uD83C\uDDFF", "Uzbekistan", "Uzbek", "uz");
+            Language lang2 = new Language("\uD83C\uDDF7\uD83C\uDDFA", "Russia", "Русский", "ru");
+            lang = new Language("\uD83C\uDDFA\uD83C\uDDF8", "America", "English", "en");
 
-            languageRepository.saveAll(List.of(lang1, lang2, lang3));
+            languageRepository.saveAll(List.of(lang, lang2, lang3));
         }
     }
 
-    public BotLanguage getDefLang(){
-        return lang3;
+    public Language getDefLang(){
+        return lang;
     }
 }

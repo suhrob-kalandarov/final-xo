@@ -28,7 +28,7 @@ public class BaseGame extends BaseEntity{
     @Column(name = "game_ended_date_time")
     private LocalDateTime endedAt;
 
-    public void initGameBoard() {
+    public void initializeBoard() {
         this.board = new int[3][3];
     }
 }

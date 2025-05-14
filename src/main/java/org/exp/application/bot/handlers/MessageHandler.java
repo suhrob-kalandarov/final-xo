@@ -23,7 +23,7 @@ public class MessageHandler implements DataHandler<Message> {
         TgUser tgUser = tgUserService.getOrCreateTgUser(message);
 
         if (text.equals("/start")) {
-            cabinetService.menu(tgUser);
+            cabinetService.menu(tgUser.getId());
         }
     }
 }

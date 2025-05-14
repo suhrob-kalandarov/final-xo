@@ -2,9 +2,11 @@ package org.exp.application.services;
 
 import com.pengrad.telegrambot.model.request.*;
 import lombok.RequiredArgsConstructor;
-import org.exp.application.models.entity.extra.BotLanguage;
-import org.exp.application.repositories.BotLanguageRepository;
+import org.exp.application.models.entity.game.BotGame;
+import org.exp.application.models.entity.message.Language;
+import org.exp.application.repositories.LanguageRepository;
 import org.exp.application.services.main.TgUserService;
+import org.exp.application.utils.Constants;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -13,15 +15,15 @@ import java.util.List;
 @RequiredArgsConstructor
 public class TelegramButtonService {
 
-    private final BotLanguageRepository botLanguageRepo;
+    private final LanguageRepository languageRepo;
     private final TgUserService tgUserService;
 
     public Keyboard homeMenuBtns() {
         return new InlineKeyboardMarkup(
                 new InlineKeyboardButton("Game Mode").callbackData("game-mode")
         ).addRow(
-                new InlineKeyboardButton("Info").callbackData("game-info"),
-                new InlineKeyboardButton("Settings").callbackData("settings")
+                new InlineKeyboardButton("Manual").callbackData("game-manual"),
+                new InlineKeyboardButton("Language").callbackData("language")
         );
     }
 
@@ -31,41 +33,42 @@ public class TelegramButtonService {
         ).addRow(
                 new InlineKeyboardButton("Play with friend").switchInlineQuery(" ")
         ).addRow(
-                new InlineKeyboardButton("Back to Home").callbackData("back-to_home")
+                new InlineKeyboardButton("<< Back to Home").callbackData("back-to_home")
         );
     }
 
-    public Keyboard menuChooseXO() {
+    public Keyboard menuChooseXO(BotGame botGame) {
+        Long gameId = botGame.getId();
         return new InlineKeyboardMarkup(
-                new InlineKeyboardButton("X").callbackData("play-with_x"),
-                new InlineKeyboardButton("O").callbackData("play-with_o")
+                new InlineKeyboardButton(Constants.X_SIGN).callbackData("sign-x_" + gameId),
+                new InlineKeyboardButton(Constants.O_SIGN).callbackData("sign-o_" + gameId)
         );
     }
 
-    public Keyboard botGameMenuBtns() {
+    public Keyboard botGameMenuBtns(Long gameId) {
         return new InlineKeyboardMarkup(
-                new InlineKeyboardButton("Play").callbackData("play-with_x")
+                new InlineKeyboardButton("Play").callbackData("play_" + gameId)
         ).addRow(
-                new InlineKeyboardButton("Difficulty").callbackData("difficulty")
+                new InlineKeyboardButton("Difficulty").callbackData("difficulty_" + gameId)
         ).addRow(
-                new InlineKeyboardButton("Home").callbackData("back-to_home")
+                new InlineKeyboardButton("Mode menu").callbackData("back-to_mode-menu")
         ).addRow(
-                new InlineKeyboardButton("Back").callbackData("back-to_mode-cabinet")
+                new InlineKeyboardButton("<< Back to Home").callbackData("back-to_home")
         );
     }
 
     public Keyboard langMenuBtns() {
         InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
-        List<BotLanguage> languages = botLanguageRepo.findAll();
+        List<Language> languages = languageRepo.findAll();
 
         int size = languages.size();
         int i = 0;
 
         // Agar soni toq bo‘lsa, birinchi tilni alohida chiqaramiz
         if (size % 2 != 0) {
-            BotLanguage firstLang = languages.getFirst();
+            Language firstLang = languages.getFirst();
             inlineKeyboardMarkup.addRow(
-                    new InlineKeyboardButton(firstLang.getFlag() + firstLang.getName())
+                    new InlineKeyboardButton(firstLang.getFlag() + firstLang.getLanguage())
                             .callbackData("LANG_" + firstLang.getId())
             );
             i = 1; // Ikkinchisidan boshlab 2tadan chiqaramiz
@@ -73,17 +76,42 @@ public class TelegramButtonService {
 
         // Qolgan tillarni 2 tadan chiqarish
         for (; i < size; i += 2) {
-            BotLanguage lang1 = languages.get(i);
-            BotLanguage lang2 = languages.get(i + 1);
+            Language lang1 = languages.get(i);
+            Language lang2 = languages.get(i + 1);
 
             inlineKeyboardMarkup.addRow(
-                    new InlineKeyboardButton(lang1.getFlag() + lang1.getName())
+                    new InlineKeyboardButton(lang1.getFlag() + lang1.getLanguage())
                             .callbackData("LANG_" + lang1.getId()),
-                    new InlineKeyboardButton(lang2.getFlag() + lang2.getName())
+                    new InlineKeyboardButton(lang2.getFlag() + lang2.getLanguage())
                             .callbackData("LANG_" + lang2.getId())
             );
         }
 
         return inlineKeyboardMarkup;
+    }
+
+    public InlineKeyboardMarkup getBoardBtns(long gameId, int[][] board) {
+        InlineKeyboardMarkup markup = new InlineKeyboardMarkup();
+        for (int i = 0; i < board.length; i++) {
+            InlineKeyboardButton[] row = new InlineKeyboardButton[board[i].length];
+            for (int j = 0; j < board[i].length; j++) {
+                String cellText = switch (board[i][j]) {
+                    case 1 -> "❌";
+                    case 2 -> "⭕";
+                    default -> "⬜";
+                };
+                row[j] = new InlineKeyboardButton(cellText)
+                        .callbackData("MOVE_" + gameId + "_" + i + "_" + j);
+            }
+            markup.addRow(row);
+        }
+        return markup;
+    }
+
+    public InlineKeyboardMarkup endMultiGameBtns() {
+        return new InlineKeyboardMarkup(
+                new InlineKeyboardButton("🔄").switchInlineQueryCurrentChat(" "),
+                new InlineKeyboardButton("🤖").url("https://t.me/" + "xoDemoBot")
+        );
     }
 }

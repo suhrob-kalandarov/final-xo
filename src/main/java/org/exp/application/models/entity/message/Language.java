@@ -1,4 +1,4 @@
-package org.exp.application.models.entity.extra;
+package org.exp.application.models.entity.message;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -13,11 +13,11 @@ import org.exp.application.models.basekeys.BaseEntity;
 @AllArgsConstructor
 @Entity
 @Table(name = "bot_languages")
-public class BotLanguage extends BaseEntity {
-    private String country;
+public class Language extends BaseEntity {
     private String flag;
-    private String name;
+    private String country;
+    private String language;
 
-    @Column(name = "lang_code")
-    private String langCode;
+    @Column(name = "code")
+    private String code;
 }

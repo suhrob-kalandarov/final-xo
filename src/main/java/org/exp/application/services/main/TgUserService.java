@@ -81,4 +81,8 @@ public class TgUserService {
 
         return username;
     }
+
+    public void updateMessageId(Long userId, Integer messageId) {
+        tgUserRepository.updateMessageIdByUserId(userId, messageId);
+    }
 }

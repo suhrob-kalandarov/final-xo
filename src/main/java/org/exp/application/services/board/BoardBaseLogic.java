@@ -4,7 +4,7 @@ import org.exp.application.utils.Constants;
 import org.springframework.stereotype.Service;
 
 @Service
-public class BoardChecker {
+public class BoardBaseLogic {
 
     public boolean checkWin(int[][] board, int player) {
         for (int i = 0; i < 3; i++)

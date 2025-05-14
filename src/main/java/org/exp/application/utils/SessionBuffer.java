@@ -1,7 +1,7 @@
 package org.exp.application.utils;
 
-import org.exp.application.models.entity.BotGame;
-import org.exp.application.models.entity.MultiGame;
+import org.exp.application.models.entity.game.BotGame;
+import org.exp.application.models.entity.game.MultiGame;
 import org.exp.application.models.entity.TgUser;
 import org.springframework.stereotype.Service;
 
