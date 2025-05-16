@@ -1,5 +1,6 @@
-package org.exp.application.bot.processes;
+package org.exp.application.bot.processes.botgame;
 
+import com.pengrad.telegrambot.model.request.InlineKeyboardMarkup;
 import com.pengrad.telegrambot.model.request.ParseMode;
 import com.pengrad.telegrambot.request.EditMessageText;
 import com.pengrad.telegrambot.request.SendMessage;
@@ -13,6 +14,8 @@ import org.exp.application.services.TelegramButtonService;
 import org.exp.application.services.TelegramEditService;
 import org.exp.application.services.TelegramSenderService;
 import org.exp.application.services.board.BoardBaseLogic;
+import org.exp.application.services.main.TgUserService;
+import org.exp.application.services.session.UserSessionService;
 import org.exp.application.utils.Constants;
 import org.springframework.stereotype.Service;
 
@@ -28,15 +31,22 @@ public class BotGameService {
     private final BoardBaseLogic boardBaseLogic;
     private final BotGameRepository botGameRepository;
 
+    private final TgUserService tgUserService;
+
+    private final UserSessionService sessionService;
+
     private final TelegramSenderService senderService;
     private final TelegramEditService editService;
     private final TelegramButtonService buttonService;
 
     public void handleMove(String data){
         try {
-            Long gameId = Long.parseLong(data.split("_")[1]);
-            int row = Integer.parseInt(data.split("_")[2]);
-            int col = Integer.parseInt(data.split("_")[3]);
+            String payload = data.substring("game-cell_".length());
+            String[] parts = payload.split("_");
+
+            Long gameId = Long.parseLong(parts[0]);
+            int row = Integer.parseInt(parts[1]);
+            int col = Integer.parseInt(parts[2]);
 
             Optional<BotGame> optionalBotGame = findById(gameId);
 
@@ -53,12 +63,12 @@ public class BotGameService {
                 return;
             }
 
-            int[][] board = botGame.getBoard(); // BaseGame'dan oladi
+            int[][] board = botGame.getBoard();
 
             if (boardBaseLogic.isBoardFull(board)) {
                 botGame.initializeBoard();
                 botGameRepository.save(botGame);
-                board = botGame.getBoard(); // qayta yuklash
+                board = botGame.getBoard();
             }
 
             if (board[row][col] != 0) return;
@@ -79,7 +89,7 @@ public class BotGameService {
                 return;
             }
 
-            int[] botMove = botGameLogic.findBestMove(board, botGame.getDifficulty().name());
+            int[] botMove = botGameLogic.findBestMove(board, botGame.getDifficulty());
             board[botMove[0]][botMove[1]] = 2;
             botGame.setBoard(board);
             botGameRepository.save(botGame);
@@ -104,16 +114,8 @@ public class BotGameService {
     }
 
     private void updateGameBoard(BotGame botGame) {
-        String playerSign = botGame.getPlayerSymbol();
-        String botSign = playerSign.equals(Constants.X_SIGN) ? Constants.O_SIGN : Constants.X_SIGN;
-
-        /*Integer messageId = senderService.sendMessage(
-                botGame.getPlayer().getId(),
-                "🎮 GAME BOARD" +
-                        "\nYou: " + playerSign +
-                        "\nBot: " + botSign,
-                buttonService.getBoardBtns(botGame.getId(), botGame.getBoard())
-        );*/
+        String playerSign = botGame.getPlayerSign();
+        String botSign = getBotSymbol(playerSign);
 
         Integer editMessageId = editService.editMessage(
                 botGame.getPlayer().getId(),
@@ -123,7 +125,8 @@ public class BotGameService {
                         "\nBot: " + botSign,
                 buttonService.getBoardBtns(
                         botGame.getId(),
-                        botGame.getBoard()
+                        botGame.getBoard(),
+                        botGame.getPlayerSign()
                 )
         );
 
@@ -135,20 +138,56 @@ public class BotGameService {
         TgUser player = botGame.getPlayer();
         int[][] board = botGame.getBoard();
 
-        senderService.execute(getResultMessageText(botGame, resultMessage, formatBoard(botGame)));
+        senderService.execute(getResultMessageText(botGame, resultMessage, formatBoard(botGame.getPlayerSign(), board)));
 
-        int newMessageId = senderService.execute(
-                new SendMessage(player.getId(), USER_STATISTICS_MSG)
-                        .parseMode(ParseMode.HTML)
-                        .replyMarkup(buttonService.botGameMenuBtns(botGame.getId()))
-        );
-
-        botGame.setMessageId(newMessageId);
-        botGame.initializeBoard();
-        botGameRepository.save(botGame);
+        sendMenu(botGame);
     }
 
+    public void sendMenu(BotGame botGame){
+        int newMessageId = senderService.execute(
+                new SendMessage(
+                        botGame.getPlayer().getId(),
+                        getStatMessage()
+                )
+                        .parseMode(ParseMode.HTML)
+                        .replyMarkup(buttonService.botGameMenuBtns())
+        );
+
+        sessionService.updateMessageId(botGame.getPlayer().getId(), newMessageId);
+        botGame.initializeBoard();
+        save(botGame);
+    }
+
+    public void editAndSendMenu(BotGame botGame, Integer messageId){
+        Long userId = botGame.getPlayer().getId();
+        int editMessageId = editService.editMessage(
+                userId,
+                messageId,
+                getStatMessage(),
+                (InlineKeyboardMarkup) buttonService.botGameMenuBtns(),
+                ParseMode.HTML
+        );
+
+        botGame.setMessageId(editMessageId);
+        botGame.initializeBoard();
+        save(botGame);
+    }
+
+    public String getStatMessage() {
+        return USER_STATISTICS_MSG.formatted(
+                """
+                        \s\s\s\s\s🏆   ⚖️   😭
+                        EA👶
+                        ME😎
+                        HA😈
+                        EE🥶
+                        """
+        );
+    }
+
+
     private EditMessageText getResultMessageText(BotGame botGame, String resultMessage, String boardState) {
+
         return new EditMessageText(
                 botGame.getPlayer().getId(),
                 botGame.getMessageId(),
@@ -156,11 +195,8 @@ public class BotGameService {
         ).parseMode(ParseMode.HTML);
     }
 
-    private String formatBoard(BotGame botGame) {
-
-        String botSign = botGame.getPlayerSymbol().equals(Constants.X_SIGN) ? Constants.O_SIGN : Constants.X_SIGN;
-
-        int[][] board = botGame.getBoard();
+    private String formatBoard(String playerSign, int[][] board) {
+        String botSign = getBotSymbol(playerSign);
         StringBuilder sb = new StringBuilder();
         String padding = "  ";
         sb.append("<pre>");
@@ -168,7 +204,7 @@ public class BotGameService {
             sb.append(padding);
             for (int cell : row) {
                 String symbol = switch (cell) {
-                    case 1 -> botGame.getPlayerSymbol();
+                    case 1 -> playerSign;
                     case 2 -> botSign;
                     default -> EMPTY_SIGN;
                 };
@@ -180,22 +216,8 @@ public class BotGameService {
         return sb.toString();
     }
 
-    private String getBotSymbol() {
-        // Agar har bir userga xos bo‘lsa, DB dan olinadi, aks holda umumiy belgi
-        return "⭕";
-    }
-
-    public BotGame getOrCreateBotGame(TgUser player, Integer messageId){
-        Optional<BotGame> optionalBotGame = getByPlayerId(player.getId());
-
-        if (optionalBotGame.isPresent()) {
-            BotGame botGame = optionalBotGame.get();
-            botGame.setMessageId(messageId);
-            botGame.initializeBoard();
-            return botGame;
-        }
-
-        return createReturnBotGame(player, messageId);
+    private String getBotSymbol(String playerSign) {
+        return playerSign.equals(Constants.X_SIGN) ? Constants.O_SIGN : Constants.X_SIGN;
     }
 
     public BotGame getOrCreateBotGame(TgUser player){
@@ -208,16 +230,6 @@ public class BotGameService {
         }
 
         return createReturnBotGame(player);
-    }
-
-
-    public BotGame createReturnBotGame(TgUser player, Integer messageId) {
-        BotGame newBotGame = BotGame.builder()
-                .difficulty(Difficulty.EASY)
-                .messageId(messageId)
-                .player(player)
-                .build();
-        return botGameRepository.save(newBotGame);
     }
 
     public BotGame createReturnBotGame(TgUser player) {
@@ -241,7 +253,15 @@ public class BotGameService {
         return botGameRepository.save(botGame);
     }
 
-    public Optional<BotGame> findById(Long number) {
-        return botGameRepository.findById(number);
+    public Optional<BotGame> findById(Long userId) {
+        return botGameRepository.findById(userId);
+    }
+
+    public Optional<BotGame> findByPlayerId(Long userId) {
+        return botGameRepository.findByPlayerId(userId);
+    }
+
+    public boolean hasBotGameRow(Long playerId) {
+        return botGameRepository.existsByPlayer_Id(playerId);
     }
 }

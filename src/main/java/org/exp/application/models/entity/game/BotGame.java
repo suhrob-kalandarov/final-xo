@@ -26,7 +26,7 @@ public class BotGame extends BaseGame {
     private Integer messageId;
 
     @Column(name = "player_symbol")
-    private String playerSymbol;
+    private String playerSign;
 
     public BotGame(TgUser player) {
         this.player = player;

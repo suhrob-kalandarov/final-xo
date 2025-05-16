@@ -4,6 +4,7 @@ import com.pengrad.telegrambot.model.Message;
 import lombok.RequiredArgsConstructor;
 import org.exp.application.config.DataLoader;
 import org.exp.application.models.entity.TgUser;
+import org.exp.application.models.entity.message.Language;
 import org.exp.application.repositories.TgUserRepository;
 import org.springframework.stereotype.Service;
 
@@ -83,6 +84,10 @@ public class TgUserService {
     }
 
     public void updateMessageId(Long userId, Integer messageId) {
-        tgUserRepository.updateMessageIdByUserId(userId, messageId);
+        //tgUserRepository.updateMessageIdByUserId(userId, messageId);
+    }
+
+    public void updateLanguage(Long userId, Language language) {
+        tgUserRepository.updateLanguage(language, userId);
     }
 }

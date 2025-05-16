@@ -1,6 +1,7 @@
 package org.exp.application.services;
 
 import lombok.RequiredArgsConstructor;
+import org.exp.application.models.enums.Difficulty;
 import org.exp.application.services.board.BoardBaseLogic;
 import org.springframework.stereotype.Service;
 
@@ -22,13 +23,13 @@ public class BotGameLogic {
     private final Random random = new Random();
 
     // A method that takes logic based on level
-    public int[] findBestMove(int[][] board, String difficulty) {
+    public int[] findBestMove(int[][] board, Difficulty difficulty) {
         if (boardChecker.isBoardFull(board)) return new int[]{-1, -1};
-        return switch (LEVEL + difficulty) {
-            case LEVEL_EASY -> findVeryEasyMove(board);
-            case LEVEL_AVERAGE -> findAverageMove(board);
-            case LEVEL_DIFFICULT -> findDifficultMove(board);
-            case LEVEL_EXTREME -> findExtremeMove(board);
+        return switch (difficulty) {
+            case Difficulty.EASY -> findVeryEasyMove(board);
+            case Difficulty.MEDIUM -> findAverageMove(board);
+            case Difficulty.HARD -> findDifficultMove(board);
+            case Difficulty.EXTREME -> findExtremeMove(board);
             default -> findEasyMove(board);
         };
     }
@@ -69,8 +70,7 @@ public class BotGameLogic {
     // Average move mode
     private int[] findAverageMove(int[][] board) {
         return random.nextBoolean() ?
-                findEasyMove(board) : findDifficultMove(board)
-                ;
+                findEasyMove(board) : findDifficultMove(board);
     }
 
     // Difficult move mode

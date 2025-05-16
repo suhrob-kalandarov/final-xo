@@ -24,13 +24,22 @@ public interface Constants {
 
     String BOARD_MSG = "board_msg";
 
-    String USER_STATISTICS_MSG = "bot-game_statistics_msg";
+    String USER_STATISTICS_MSG = """
+            bot-game_statistics_msg
+            <b>
+                Statistics:
+            </b>
+            \\n
+            <pre>
+                %s
+            </pre>
+            """;
     String SUPPORT_BTN = "support_btn";
 
     String DIFFICULTY_LEVEL_MSG = "difficulty_level_msg";
     String DIFFICULTY_LEVEL_BTN = "difficulty_level_btn";
 
-    String LEVEL = "level_";
+    String LEVEL = "bot-game-level_";
     String LEVEL_EASY = "level_easy";
     String LEVEL_AVERAGE = "level_medium";
     String LEVEL_DIFFICULT = "level_hard";

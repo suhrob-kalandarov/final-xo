@@ -1,13 +1,16 @@
-package org.exp.application.bot.processes;
+package org.exp.application.bot.processes.botgame;
 
+import com.pengrad.telegrambot.model.request.InlineKeyboardMarkup;
 import lombok.RequiredArgsConstructor;
-import org.exp.application.models.entity.TgUser;
+import org.exp.application.bot.processes.CabinetService;
 import org.exp.application.models.entity.message.Language;
+import org.exp.application.models.entity.session.UserSession;
 import org.exp.application.repositories.LanguageRepository;
 import org.exp.application.services.TelegramButtonService;
+import org.exp.application.services.TelegramEditService;
 import org.exp.application.services.TelegramSenderService;
 import org.exp.application.services.main.TgUserService;
-import org.exp.application.utils.SessionBuffer;
+import org.exp.application.services.session.UserSessionService;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -15,27 +18,33 @@ import org.springframework.stereotype.Service;
 public class LanguageService {
 
     private final TelegramSenderService senderService;
+    private final TelegramEditService editService;
     private final TelegramButtonService buttonService;
     private final TgUserService tgUserService;
     private final LanguageRepository languageRepository;
 
-    private final ModeService modeService;
+    private final CabinetService cabinetService;
+
+    private final UserSessionService sessionService;
 
     public void sendLangMenu(Long userId) {
-        senderService.sendMessage(userId, "Choose bot language:", buttonService.langMenuBtns());
+        UserSession session = sessionService.getOrCreate(userId);
+        Integer messageId = editService.editMessage(
+                userId, session.getMessageId(),
+                "Choose bot language",
+                (InlineKeyboardMarkup) buttonService.langMenuBtns()
+        );
+        sessionService.updateMessageId(userId, messageId);
     }
 
     public void setBotLanguage(Long userId, String data) {
         Long langId = Long.parseLong(data.split("_")[1]);
         Language botLanguage = getById(langId);
 
-        TgUser tgUser = tgUserService.getById(userId);
-        tgUser.setLanguage(botLanguage);
-        tgUserService.save(tgUser);
-
+        tgUserService.updateLanguage(userId, botLanguage);
         System.out.println("Success set lang!");
 
-        modeService.sendMainMenu(userId);
+        cabinetService.editSendHome(userId);
     }
 
     public Language getById(Long langId) {

@@ -4,12 +4,15 @@ import com.pengrad.telegrambot.model.request.*;
 import lombok.RequiredArgsConstructor;
 import org.exp.application.models.entity.game.BotGame;
 import org.exp.application.models.entity.message.Language;
+import org.exp.application.models.enums.Difficulty;
 import org.exp.application.repositories.LanguageRepository;
 import org.exp.application.services.main.TgUserService;
 import org.exp.application.utils.Constants;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+
+import static org.exp.application.utils.Constants.*;
 
 @Service
 @RequiredArgsConstructor
@@ -20,40 +23,77 @@ public class TelegramButtonService {
 
     public Keyboard homeMenuBtns() {
         return new InlineKeyboardMarkup(
-                new InlineKeyboardButton("Game Mode").callbackData("game-mode")
+                new InlineKeyboardButton("Play with bot").callbackData("bot-main-menu")
         ).addRow(
-                new InlineKeyboardButton("Manual").callbackData("game-manual"),
-                new InlineKeyboardButton("Language").callbackData("language")
+                new InlineKeyboardButton("Play with friend").switchInlineQuery(" play")
+        ).addRow(
+                new InlineKeyboardButton("Manual Info").callbackData("game-manual"),
+                new InlineKeyboardButton("Language").callbackData("user-language")
         );
     }
 
-    public Keyboard modeMenuBtns() {
+    public Keyboard botGameMenuBtns() {
         return new InlineKeyboardMarkup(
-                new InlineKeyboardButton("Play with bot").callbackData("play-with_bot")
+                new InlineKeyboardButton("Play").callbackData("bot-game-play")
         ).addRow(
-                new InlineKeyboardButton("Play with friend").switchInlineQuery(" ")
+                new InlineKeyboardButton("Difficulty").callbackData("bot-game-difficulty")
         ).addRow(
-                new InlineKeyboardButton("<< Back to Home").callbackData("back-to_home")
+                new InlineKeyboardButton("Back").callbackData("user-back-to_home")
         );
     }
 
     public Keyboard menuChooseXO(BotGame botGame) {
         Long gameId = botGame.getId();
         return new InlineKeyboardMarkup(
-                new InlineKeyboardButton(Constants.X_SIGN).callbackData("sign-x_" + gameId),
-                new InlineKeyboardButton(Constants.O_SIGN).callbackData("sign-o_" + gameId)
+                new InlineKeyboardButton(Constants.X_SIGN).callbackData("bot-game-player-sign-x_" + gameId),
+                new InlineKeyboardButton(Constants.O_SIGN).callbackData("bot-game-player-sign-o_" + gameId)
         );
     }
 
-    public Keyboard botGameMenuBtns(Long gameId) {
+    public InlineKeyboardMarkup difficultyMenuButtons(){
+        return new InlineKeyboardMarkup()
+                .addRow(
+                        new InlineKeyboardButton(LEVEL_EASY).callbackData(LEVEL + Difficulty.EASY)
+                )
+                .addRow(
+                        new InlineKeyboardButton(LEVEL_AVERAGE).callbackData(LEVEL + Difficulty.MEDIUM),
+                        new InlineKeyboardButton(LEVEL_DIFFICULT).callbackData(LEVEL + Difficulty.HARD)
+                )
+                .addRow(
+                        new InlineKeyboardButton(LEVEL_EXTREME).callbackData(LEVEL + Difficulty.EXTREME)
+                )
+                /*.addRow(
+                        new InlineKeyboardButton(BACK_BUTTON_MSG).callbackData("user-back-to_bot-game-menu")
+                )*/
+                ;
+    }
+
+    public InlineKeyboardMarkup getBoardBtns(long gameId, int[][] board, String playerSign) {
+        InlineKeyboardMarkup markup = new InlineKeyboardMarkup();
+
+        String playerEmoji = playerSign.equals(Constants.X_SIGN) ? "❌" : "⭕";
+        String botEmoji = playerSign.equals(Constants.X_SIGN) ? "⭕" : "❌";
+
+        for (int i = 0; i < board.length; i++) {
+            InlineKeyboardButton[] row = new InlineKeyboardButton[board[i].length];
+            for (int j = 0; j < board[i].length; j++) {
+                String cellText = switch (board[i][j]) {
+                    case 1 -> playerEmoji;
+                    case 2 -> botEmoji;
+                    default -> "⬜";
+                };
+                row[j] = new InlineKeyboardButton(cellText)
+                        .callbackData("bot-game-cell_" + gameId + "_" + i + "_" + j);
+            }
+            markup.addRow(row);
+        }
+        return markup;
+    }
+
+    public InlineKeyboardMarkup endMultiGameBtns() {
         return new InlineKeyboardMarkup(
-                new InlineKeyboardButton("Play").callbackData("play_" + gameId)
-        ).addRow(
-                new InlineKeyboardButton("Difficulty").callbackData("difficulty_" + gameId)
-        ).addRow(
-                new InlineKeyboardButton("Mode menu").callbackData("back-to_mode-menu")
-        ).addRow(
-                new InlineKeyboardButton("<< Back to Home").callbackData("back-to_home")
+                new InlineKeyboardButton("🔄").switchInlineQueryCurrentChat(" play"),
+                new InlineKeyboardButton("🤖").url("https://t.me/" + "xoDemoBot")
         );
     }
 
@@ -64,54 +104,27 @@ public class TelegramButtonService {
         int size = languages.size();
         int i = 0;
 
-        // Agar soni toq bo‘lsa, birinchi tilni alohida chiqaramiz
         if (size % 2 != 0) {
             Language firstLang = languages.getFirst();
             inlineKeyboardMarkup.addRow(
                     new InlineKeyboardButton(firstLang.getFlag() + firstLang.getLanguage())
-                            .callbackData("LANG_" + firstLang.getId())
+                            .callbackData("user-lang_" + firstLang.getId())
             );
-            i = 1; // Ikkinchisidan boshlab 2tadan chiqaramiz
+            i = 1;
         }
 
-        // Qolgan tillarni 2 tadan chiqarish
         for (; i < size; i += 2) {
             Language lang1 = languages.get(i);
             Language lang2 = languages.get(i + 1);
 
             inlineKeyboardMarkup.addRow(
                     new InlineKeyboardButton(lang1.getFlag() + lang1.getLanguage())
-                            .callbackData("LANG_" + lang1.getId()),
+                            .callbackData("user-lang_" + lang1.getId()),
                     new InlineKeyboardButton(lang2.getFlag() + lang2.getLanguage())
-                            .callbackData("LANG_" + lang2.getId())
+                            .callbackData("user-lang_" + lang2.getId())
             );
         }
 
         return inlineKeyboardMarkup;
-    }
-
-    public InlineKeyboardMarkup getBoardBtns(long gameId, int[][] board) {
-        InlineKeyboardMarkup markup = new InlineKeyboardMarkup();
-        for (int i = 0; i < board.length; i++) {
-            InlineKeyboardButton[] row = new InlineKeyboardButton[board[i].length];
-            for (int j = 0; j < board[i].length; j++) {
-                String cellText = switch (board[i][j]) {
-                    case 1 -> "❌";
-                    case 2 -> "⭕";
-                    default -> "⬜";
-                };
-                row[j] = new InlineKeyboardButton(cellText)
-                        .callbackData("MOVE_" + gameId + "_" + i + "_" + j);
-            }
-            markup.addRow(row);
-        }
-        return markup;
-    }
-
-    public InlineKeyboardMarkup endMultiGameBtns() {
-        return new InlineKeyboardMarkup(
-                new InlineKeyboardButton("🔄").switchInlineQueryCurrentChat(" "),
-                new InlineKeyboardButton("🤖").url("https://t.me/" + "xoDemoBot")
-        );
     }
 }

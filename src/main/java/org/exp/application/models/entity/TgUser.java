@@ -11,17 +11,13 @@ import org.exp.application.models.entity.message.Language;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "tg_users")
+@Table(name = "bot_users")
 public class TgUser extends BaseDate {
-
     @Id
     private Long id;
 
     private String fullname;
     private String username;
-
-    @Column(name = "message_id")
-    private Integer messageId;
 
     private boolean _active;
 

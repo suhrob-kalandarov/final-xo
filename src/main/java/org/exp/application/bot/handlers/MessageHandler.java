@@ -20,10 +20,16 @@ public class MessageHandler implements DataHandler<Message> {
     @Override
     public void handle(Message message) {
         String text = message.text();
+        Long userId = message.from().id();
         TgUser tgUser = tgUserService.getOrCreateTgUser(message);
 
         if (text.equals("/start")) {
-            cabinetService.menu(tgUser.getId());
+
+            /*if (tgUser.getMessageId() != null) {
+                cabinetService.editSendHome(tgUser);
+            }*/
+
+            cabinetService.menuHome(userId);
         }
     }
 }
