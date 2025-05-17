@@ -1,10 +1,10 @@
 package org.exp.application.services.session;
 
 import lombok.RequiredArgsConstructor;
-import org.exp.application.config.DataLoader;
 import org.exp.application.models.entity.message.Language;
 import org.exp.application.models.entity.session.SessionMenu;
 import org.exp.application.models.entity.session.UserSession;
+import org.exp.application.repositories.common.LanguageRepository;
 import org.exp.application.repositories.common.UserSessionRepository;
 import org.springframework.stereotype.Service;
 
@@ -13,11 +13,13 @@ import org.springframework.stereotype.Service;
 public class UserSessionService {
 
     private final UserSessionRepository repository;
+    private final LanguageRepository languageRepository;
 
     public UserSession getOrCreate(Long userId) {
+        Language language = languageRepository.findById(1L).get();
         return repository.findById(userId)
                 .orElseGet(() -> repository.save(
-                        UserSession.builder().userId(userId).language(DataLoader.lang1).build()
+                        UserSession.builder().userId(userId).language(language).build()
                 ));
     }
 
