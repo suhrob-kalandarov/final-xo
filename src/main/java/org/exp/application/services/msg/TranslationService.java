@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.exp.application.models.entity.message.Language;
 import org.exp.application.models.entity.message.Translation;
 import org.exp.application.models.entity.session.SessionMenu;
-import org.exp.application.repositories.TranslationRepository;
+import org.exp.application.repositories.common.TranslationRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;

@@ -1,4 +1,4 @@
-package org.exp.application.repositories;
+package org.exp.application.repositories.botgame;
 
 import jakarta.transaction.Transactional;
 import org.exp.application.models.entity.game.BotGame;

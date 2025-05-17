@@ -8,10 +8,10 @@ import org.exp.application.models.entity.message.Translation;
 import org.exp.application.models.entity.session.SessionMenu;
 import org.exp.application.models.entity.session.UserSession;
 import org.exp.application.models.enums.GameStatus;
-import org.exp.application.services.BotGameLogic;
+import org.exp.application.services.botgame.BotGameLogic;
 import org.exp.application.services.TelegramButtonService;
 import org.exp.application.services.TelegramEditService;
-import org.exp.application.services.main.TgUserService;
+import org.exp.application.services.user.TgUserService;
 import org.exp.application.services.msg.TranslationService;
 import org.exp.application.services.session.UserSessionService;
 import org.exp.application.utils.Constants;
@@ -104,7 +104,7 @@ public class SignMenuService {
                 botGame.getPlayer().getId(),
                 session.getMessageId(),
                 translationService.getMessage(Constants.BOARD_MENU_MSG, session.getLanguage()).formatted(playerSign, botSign),
-                buttonService.getBoardBtns(botGame.getId(), botGame.getBoard(), botGame.getPlayerSign())
+                buttonService.getBotBoardBtns(botGame.getId(), botGame.getBoard(), botGame.getPlayerSign())
         );
         botGame.setMessageId(editMessageId);
         botGameService.save(botGame);

@@ -1,4 +1,4 @@
-package org.exp.application.services;
+package org.exp.application.services.botgame;
 
 import lombok.RequiredArgsConstructor;
 import org.exp.application.models.enums.Difficulty;
@@ -8,8 +8,6 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-
-import static org.exp.application.utils.Constants.*;
 
 @Service
 @RequiredArgsConstructor

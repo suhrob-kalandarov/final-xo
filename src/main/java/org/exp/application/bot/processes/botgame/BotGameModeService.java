@@ -2,15 +2,13 @@ package org.exp.application.bot.processes.botgame;
 
 import com.pengrad.telegrambot.model.request.InlineKeyboardMarkup;
 import com.pengrad.telegrambot.model.request.ParseMode;
-import com.pengrad.telegrambot.request.SendMessage;
 import lombok.RequiredArgsConstructor;
 import org.exp.application.models.entity.result.BotGameResult;
 import org.exp.application.models.entity.session.SessionMenu;
 import org.exp.application.models.entity.session.UserSession;
-import org.exp.application.services.BotGameResultService;
+import org.exp.application.services.botgame.BotGameResultService;
 import org.exp.application.services.TelegramButtonService;
 import org.exp.application.services.TelegramEditService;
-import org.exp.application.services.TelegramSenderService;
 import org.exp.application.services.msg.TranslationService;
 import org.exp.application.services.session.UserSessionService;
 import org.springframework.stereotype.Service;

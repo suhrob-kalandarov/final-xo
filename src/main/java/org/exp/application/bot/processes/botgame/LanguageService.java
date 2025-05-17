@@ -7,7 +7,7 @@ import org.exp.application.models.entity.message.Language;
 import org.exp.application.models.entity.message.Translation;
 import org.exp.application.models.entity.session.SessionMenu;
 import org.exp.application.models.entity.session.UserSession;
-import org.exp.application.repositories.LanguageRepository;
+import org.exp.application.repositories.common.LanguageRepository;
 import org.exp.application.services.TelegramButtonService;
 import org.exp.application.services.TelegramEditService;
 import org.exp.application.services.msg.TranslationService;

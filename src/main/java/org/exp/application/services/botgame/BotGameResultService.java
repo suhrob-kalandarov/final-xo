@@ -1,10 +1,10 @@
-package org.exp.application.services;
+package org.exp.application.services.botgame;
 
 import lombok.RequiredArgsConstructor;
 import org.exp.application.models.entity.TgUser;
 import org.exp.application.models.entity.result.BotGameResult;
 import org.exp.application.models.enums.Difficulty;
-import org.exp.application.repositories.BotGameResultRepository;
+import org.exp.application.repositories.botgame.BotGameResultRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.Arrays;

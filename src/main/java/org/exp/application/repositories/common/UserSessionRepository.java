@@ -1,4 +1,4 @@
-package org.exp.application.repositories;
+package org.exp.application.repositories.common;
 
 import io.micrometer.common.lang.Nullable;
 import jakarta.transaction.Transactional;

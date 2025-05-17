@@ -5,7 +5,7 @@ import org.exp.application.config.DataLoader;
 import org.exp.application.models.entity.message.Language;
 import org.exp.application.models.entity.session.SessionMenu;
 import org.exp.application.models.entity.session.UserSession;
-import org.exp.application.repositories.UserSessionRepository;
+import org.exp.application.repositories.common.UserSessionRepository;
 import org.springframework.stereotype.Service;
 
 @Service

@@ -3,7 +3,7 @@ package org.exp.application.bot.processes.botgame;
 import lombok.RequiredArgsConstructor;
 import org.exp.application.bot.processes.CabinetService;
 import org.exp.application.models.entity.TgUser;
-import org.exp.application.services.main.TgUserService;
+import org.exp.application.services.user.TgUserService;
 import org.springframework.stereotype.Service;
 
 @Service

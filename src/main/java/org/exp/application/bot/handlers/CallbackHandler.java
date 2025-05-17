@@ -4,6 +4,7 @@ import com.pengrad.telegrambot.model.CallbackQuery;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.exp.application.bot.processes.botgame.*;
+import org.exp.application.bot.processes.multigame.MultiGameService;
 import org.exp.application.usekeys.DataHandler;
 import org.springframework.stereotype.Component;
 
@@ -20,10 +21,20 @@ public class CallbackHandler implements DataHandler<CallbackQuery> {
     private final SignMenuService signMenuService;
     private final InfoMenuService infoService;
 
+    private final MultiGameService multiGameService;
+
     @Override
     public void handle(CallbackQuery callbackQuery) {
         String data = callbackQuery.data();
         Long userId = callbackQuery.from().id();
+
+        if (data.startsWith("MOVE_")) {
+            multiGameService.execute(callbackQuery);
+        }
+
+        if (data.startsWith("SELECT_X_")) {
+            multiGameService.execute(callbackQuery);
+        }
 
         if (data.startsWith("bot-")){
             data = extractCleanData(data, "bot-");

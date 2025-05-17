@@ -1,4 +1,4 @@
-package org.exp.application.repositories;
+package org.exp.application.repositories.common;
 
 import org.exp.application.models.entity.message.Language;
 import org.exp.application.models.entity.message.Translation;

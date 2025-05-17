@@ -2,11 +2,9 @@ package org.exp.application.services;
 
 import com.pengrad.telegrambot.model.request.*;
 import lombok.RequiredArgsConstructor;
-import org.exp.application.models.entity.game.BotGame;
 import org.exp.application.models.entity.message.Language;
 import org.exp.application.models.enums.Difficulty;
-import org.exp.application.repositories.LanguageRepository;
-import org.exp.application.services.main.TgUserService;
+import org.exp.application.repositories.common.LanguageRepository;
 import org.exp.application.utils.Constants;
 import org.springframework.stereotype.Service;
 
@@ -18,9 +16,7 @@ import static org.exp.application.utils.Constants.*;
 @Service
 @RequiredArgsConstructor
 public class TelegramButtonService {
-
     private final LanguageRepository languageRepo;
-    private final TgUserService tgUserService;
 
     public Keyboard homeMenuBtns(Map<String, String> messages) {
         return new InlineKeyboardMarkup(
@@ -68,7 +64,7 @@ public class TelegramButtonService {
                 ;
     }
 
-    public InlineKeyboardMarkup getBoardBtns(long gameId, int[][] board, String playerSign) {
+    public InlineKeyboardMarkup getBotBoardBtns(long gameId, int[][] board, String playerSign) {
         InlineKeyboardMarkup markup = new InlineKeyboardMarkup();
 
         String playerEmoji = playerSign.equals(Constants.X_SIGN) ? "❌" : "⭕";
@@ -84,6 +80,25 @@ public class TelegramButtonService {
                 };
                 row[j] = new InlineKeyboardButton(cellText)
                         .callbackData("bot-game-cell_" + gameId + "_" + i + "_" + j);
+            }
+            markup.addRow(row);
+        }
+        return markup;
+    }
+
+    public InlineKeyboardMarkup getMultiBoardBtns(Long gameId, int[][] board) {
+        InlineKeyboardMarkup markup = new InlineKeyboardMarkup();
+
+        for (int i = 0; i < board.length; i++) {
+            InlineKeyboardButton[] row = new InlineKeyboardButton[board[i].length];
+            for (int j = 0; j < board[i].length; j++) {
+                String cellText = switch (board[i][j]) {
+                    case 1 -> X_SIGN;
+                    case 2 -> O_SIGN;
+                    default -> "⬜";
+                };
+                row[j] = new InlineKeyboardButton(cellText)
+                        .callbackData("MOVE_" + gameId + "_" + i + "_" + j);
             }
             markup.addRow(row);
         }

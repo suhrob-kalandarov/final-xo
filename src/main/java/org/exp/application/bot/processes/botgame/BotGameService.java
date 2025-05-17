@@ -11,10 +11,12 @@ import org.exp.application.models.entity.result.BotGameResult;
 import org.exp.application.models.entity.session.SessionMenu;
 import org.exp.application.models.entity.session.UserSession;
 import org.exp.application.models.enums.Difficulty;
-import org.exp.application.repositories.BotGameRepository;
+import org.exp.application.repositories.botgame.BotGameRepository;
 import org.exp.application.services.*;
 import org.exp.application.services.board.BoardBaseLogic;
-import org.exp.application.services.main.TgUserService;
+import org.exp.application.services.botgame.BotGameLogic;
+import org.exp.application.services.botgame.BotGameResultService;
+import org.exp.application.services.user.TgUserService;
 import org.exp.application.services.msg.TranslationService;
 import org.exp.application.services.session.UserSessionService;
 import org.exp.application.utils.Constants;
@@ -130,7 +132,7 @@ public class BotGameService {
                 botGame.getMessageId(),
                 translationService.getMessage(BOARD_MENU_MSG, session.getLanguage())
                         .formatted(playerSign, botSign),
-                buttonService.getBoardBtns(botGame.getId(), botGame.getBoard(), botGame.getPlayerSign())
+                buttonService.getBotBoardBtns(botGame.getId(), botGame.getBoard(), botGame.getPlayerSign())
         );
 
         botGame.setMessageId(editMessageId);

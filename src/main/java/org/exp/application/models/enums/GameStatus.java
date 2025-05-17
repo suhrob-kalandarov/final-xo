@@ -11,5 +11,5 @@ public enum GameStatus {
     END,
 
     INACTIVE,
-    BLOCKED,
+    BLOCKED, FINISHED,
 }

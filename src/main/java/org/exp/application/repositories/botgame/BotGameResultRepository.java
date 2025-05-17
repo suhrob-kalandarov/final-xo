@@ -1,4 +1,4 @@
-package org.exp.application.repositories;
+package org.exp.application.repositories.botgame;
 
 import org.exp.application.models.entity.result.BotGameResult;
 import org.exp.application.models.enums.Difficulty;

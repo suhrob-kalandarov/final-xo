@@ -5,7 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.exp.application.models.entity.session.SessionMenu;
 import org.exp.application.models.entity.session.UserSession;
 import org.exp.application.models.enums.Difficulty;
-import org.exp.application.repositories.BotGameRepository;
+import org.exp.application.repositories.botgame.BotGameRepository;
 import org.exp.application.services.TelegramButtonService;
 import org.exp.application.services.TelegramEditService;
 import org.exp.application.services.msg.TranslationService;

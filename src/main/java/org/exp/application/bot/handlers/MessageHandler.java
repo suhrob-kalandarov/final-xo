@@ -7,7 +7,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.exp.application.bot.processes.CabinetService;
 import org.exp.application.models.entity.session.UserSession;
-import org.exp.application.services.main.TgUserService;
+import org.exp.application.services.user.TgUserService;
 import org.exp.application.services.session.UserSessionService;
 import org.exp.application.usekeys.DataHandler;
 import org.springframework.stereotype.Component;

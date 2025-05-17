@@ -1,14 +1,8 @@
-package org.exp.application.repositories;
+package org.exp.application.repositories.common;
 
 import org.exp.application.models.entity.TgUser;
-import org.exp.application.models.entity.message.Language;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Modifying;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
-import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 
 @Repository
 public interface TgUserRepository extends JpaRepository<TgUser, Long> {
