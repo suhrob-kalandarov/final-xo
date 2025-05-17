@@ -11,6 +11,7 @@ import org.exp.application.utils.Constants;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 
 import static org.exp.application.utils.Constants.*;
 
@@ -21,46 +22,45 @@ public class TelegramButtonService {
     private final LanguageRepository languageRepo;
     private final TgUserService tgUserService;
 
-    public Keyboard homeMenuBtns() {
+    public Keyboard homeMenuBtns(Map<String, String> messages) {
         return new InlineKeyboardMarkup(
-                new InlineKeyboardButton("Play with bot").callbackData("bot-main-menu")
+                new InlineKeyboardButton(messages.get(PLAY_WITH_BOT_BTN)).callbackData("bot-main-menu")
         ).addRow(
-                new InlineKeyboardButton("Play with friend").switchInlineQuery(" play")
+                new InlineKeyboardButton(messages.get(PLAY_WITH_FRIEND_BTN)).switchInlineQuery(" play")
         ).addRow(
-                new InlineKeyboardButton("Manual Info").callbackData("game-manual"),
-                new InlineKeyboardButton("Language").callbackData("user-language")
+                new InlineKeyboardButton(messages.get(SUPPORT_BTN)).callbackData("user-get-bot-info"),
+                new InlineKeyboardButton(messages.get(LANGUAGE_BTN)).callbackData("user-language")
         );
     }
 
-    public Keyboard botGameMenuBtns() {
+    public Keyboard botGameMenuBtns(Map<String, String> messages) {
         return new InlineKeyboardMarkup(
-                new InlineKeyboardButton("Play").callbackData("bot-game-play")
+                new InlineKeyboardButton(messages.get(PLAY)).callbackData("bot-game-play")
         ).addRow(
-                new InlineKeyboardButton("Difficulty").callbackData("bot-game-difficulty")
+                new InlineKeyboardButton(messages.get(DIFFICULTY_LEVEL_BTN)).callbackData("bot-game-difficulty")
         ).addRow(
-                new InlineKeyboardButton("Back").callbackData("user-back-to_home")
+                new InlineKeyboardButton(messages.get(BACK_BTN)).callbackData("user-back-to_home")
         );
     }
 
-    public Keyboard menuChooseXO(BotGame botGame) {
-        Long gameId = botGame.getId();
+    public Keyboard menuChooseXO(Long gameId) {
         return new InlineKeyboardMarkup(
                 new InlineKeyboardButton(Constants.X_SIGN).callbackData("bot-game-player-sign-x_" + gameId),
                 new InlineKeyboardButton(Constants.O_SIGN).callbackData("bot-game-player-sign-o_" + gameId)
         );
     }
 
-    public InlineKeyboardMarkup difficultyMenuButtons(){
+    public InlineKeyboardMarkup difficultyMenuButtons(Map<String, String> messages){
         return new InlineKeyboardMarkup()
                 .addRow(
-                        new InlineKeyboardButton(LEVEL_EASY).callbackData(LEVEL + Difficulty.EASY)
+                        new InlineKeyboardButton(messages.get(LEVEL_EASY)).callbackData(LEVEL + Difficulty.EASY)
                 )
                 .addRow(
-                        new InlineKeyboardButton(LEVEL_AVERAGE).callbackData(LEVEL + Difficulty.MEDIUM),
-                        new InlineKeyboardButton(LEVEL_DIFFICULT).callbackData(LEVEL + Difficulty.HARD)
+                        new InlineKeyboardButton(messages.get(LEVEL_MEDIUM)).callbackData(LEVEL + Difficulty.MEDIUM),
+                        new InlineKeyboardButton(messages.get(LEVEL_HARD)).callbackData(LEVEL + Difficulty.HARD)
                 )
                 .addRow(
-                        new InlineKeyboardButton(LEVEL_EXTREME).callbackData(LEVEL + Difficulty.EXTREME)
+                        new InlineKeyboardButton(messages.get(LEVEL_EXTREME)).callbackData(LEVEL + Difficulty.EXTREME)
                 )
                 /*.addRow(
                         new InlineKeyboardButton(BACK_BUTTON_MSG).callbackData("user-back-to_bot-game-menu")
@@ -126,5 +126,13 @@ public class TelegramButtonService {
         }
 
         return inlineKeyboardMarkup;
+    }
+
+
+    public InlineKeyboardMarkup backBtn(String msg){
+        return  new InlineKeyboardMarkup(
+                new InlineKeyboardButton(msg)
+                        .callbackData("user-back-to_home")
+        );
     }
 }

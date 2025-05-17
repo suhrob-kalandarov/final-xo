@@ -4,12 +4,13 @@ import com.pengrad.telegrambot.model.request.InlineKeyboardMarkup;
 import lombok.RequiredArgsConstructor;
 import org.exp.application.bot.processes.CabinetService;
 import org.exp.application.models.entity.message.Language;
+import org.exp.application.models.entity.message.Translation;
+import org.exp.application.models.entity.session.SessionMenu;
 import org.exp.application.models.entity.session.UserSession;
 import org.exp.application.repositories.LanguageRepository;
 import org.exp.application.services.TelegramButtonService;
 import org.exp.application.services.TelegramEditService;
-import org.exp.application.services.TelegramSenderService;
-import org.exp.application.services.main.TgUserService;
+import org.exp.application.services.msg.TranslationService;
 import org.exp.application.services.session.UserSessionService;
 import org.springframework.stereotype.Service;
 
@@ -17,21 +18,19 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class LanguageService {
 
-    private final TelegramSenderService senderService;
     private final TelegramEditService editService;
     private final TelegramButtonService buttonService;
-    private final TgUserService tgUserService;
     private final LanguageRepository languageRepository;
-
     private final CabinetService cabinetService;
-
     private final UserSessionService sessionService;
+    private final TranslationService translationService;
 
     public void sendLangMenu(Long userId) {
         UserSession session = sessionService.getOrCreate(userId);
+        Translation translation = translationService.getTranslation(SessionMenu.LANGUAGE, session.getLanguage());
         Integer messageId = editService.editMessage(
                 userId, session.getMessageId(),
-                "Choose bot language",
+                translation.getValue(),
                 (InlineKeyboardMarkup) buttonService.langMenuBtns()
         );
         sessionService.updateMessageId(userId, messageId);
@@ -40,10 +39,7 @@ public class LanguageService {
     public void setBotLanguage(Long userId, String data) {
         Long langId = Long.parseLong(data.split("_")[1]);
         Language botLanguage = getById(langId);
-
-        tgUserService.updateLanguage(userId, botLanguage);
-        System.out.println("Success set lang!");
-
+        sessionService.updateLanguage(userId, botLanguage);
         cabinetService.editSendHome(userId);
     }
 

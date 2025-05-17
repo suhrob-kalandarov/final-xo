@@ -2,13 +2,14 @@ package org.exp.application.models.entity.game;
 
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 import org.exp.application.models.basekeys.BaseGame;
 import org.exp.application.models.entity.TgUser;
 import org.exp.application.models.enums.Difficulty;
 
 @Getter
 @Setter
-@Builder
+@SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity

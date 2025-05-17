@@ -2,6 +2,7 @@ package org.exp.application.models.basekeys;
 
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 import org.exp.application.models.enums.GameStatus;
 import org.exp.application.services.board.BoardConverter;
 
@@ -9,6 +10,9 @@ import java.time.LocalDateTime;
 
 @Getter
 @Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@SuperBuilder
 @MappedSuperclass
 public class BaseGame extends BaseEntity{
 

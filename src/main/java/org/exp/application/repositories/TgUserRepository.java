@@ -19,11 +19,12 @@ public interface TgUserRepository extends JpaRepository<TgUser, Long> {
     @Modifying
     @Query("UPDATE TgUser t SET t.messageId = :messageId WHERE t.id = :userId")
     int updateMessageIdByUserId(@Param("userId") Long userId, @Param("messageId") Integer messageId);
-*/
-    @Transactional
+
+     @Transactional
     @Modifying
     @Query("update TgUser t set t.language = ?1 where t.id =?2")
     void updateLanguage(@Nullable Language language, Long id);
+*/
 
     //boolean existsByUsername(String username);
 }

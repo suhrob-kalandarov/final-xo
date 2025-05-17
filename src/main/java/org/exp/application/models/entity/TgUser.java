@@ -2,12 +2,12 @@ package org.exp.application.models.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 import org.exp.application.models.basekeys.BaseDate;
-import org.exp.application.models.entity.message.Language;
 
 @Getter
 @Setter
-@Builder
+@SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
@@ -21,7 +21,5 @@ public class TgUser extends BaseDate {
 
     private boolean _active;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "language_id")
-    private Language language;
+    private String langCode;
 }

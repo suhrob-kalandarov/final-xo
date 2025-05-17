@@ -18,6 +18,7 @@ public class CallbackHandler implements DataHandler<CallbackQuery> {
     private final BackButtonService backButtonService;
     private final BotGameModeService botGameModeService;
     private final SignMenuService signMenuService;
+    private final InfoMenuService infoService;
 
     @Override
     public void handle(CallbackQuery callbackQuery) {
@@ -69,6 +70,9 @@ public class CallbackHandler implements DataHandler<CallbackQuery> {
 
             } else if (data.startsWith("back-to_")) {
                 backButtonService.execute(data, userId);
+
+            } else if (data.equals("get-bot-info")) {
+                infoService.sendInfoMenu(userId);
             }
 
         } else {

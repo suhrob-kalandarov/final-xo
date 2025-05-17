@@ -8,8 +8,10 @@ import com.pengrad.telegrambot.request.EditMessageText;
 import com.pengrad.telegrambot.request.SendMessage;
 import com.pengrad.telegrambot.response.SendResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class TelegramEditService {
@@ -40,6 +42,12 @@ public class TelegramEditService {
 
     public Integer editMessage(Long id, Integer messageId, String text, InlineKeyboardMarkup button, ParseMode parseMode) {
         SendResponse response = (SendResponse) bot.execute(new EditMessageText(id, messageId, text).parseMode(parseMode).replyMarkup(button));
+
+        if (!response.isOk()) {
+            log.error("❌ Message edit failed: {}", response.description());
+            return null;
+        }
+
         return response.message().messageId();
     }
 }

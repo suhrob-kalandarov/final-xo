@@ -1,7 +1,9 @@
 package org.exp.application.services.session;
 
 import lombok.RequiredArgsConstructor;
-import org.exp.application.models.entity.session.SessionPage;
+import org.exp.application.config.DataLoader;
+import org.exp.application.models.entity.message.Language;
+import org.exp.application.models.entity.session.SessionMenu;
 import org.exp.application.models.entity.session.UserSession;
 import org.exp.application.repositories.UserSessionRepository;
 import org.springframework.stereotype.Service;
@@ -15,7 +17,7 @@ public class UserSessionService {
     public UserSession getOrCreate(Long userId) {
         return repository.findById(userId)
                 .orElseGet(() -> repository.save(
-                        UserSession.builder().userId(userId).build()
+                        UserSession.builder().userId(userId).language(DataLoader.lang1).build()
                 ));
     }
 
@@ -25,9 +27,9 @@ public class UserSessionService {
         repository.save(session);
     }
 
-    public void updatePage(Long userId, SessionPage page) {
+    public void updatePage(Long userId, SessionMenu menu) {
         UserSession session = getOrCreate(userId);
-        session.setCurrentPage(page);
+        session.setCurrentMenu(menu);
         repository.save(session);
     }
 
@@ -39,5 +41,9 @@ public class UserSessionService {
 
     public void clear(Long userId) {
         repository.deleteById(userId);
+    }
+
+    public void updateLanguage(Long userId, Language botLanguage) {
+        repository.updateLanguage(botLanguage, userId);
     }
 }

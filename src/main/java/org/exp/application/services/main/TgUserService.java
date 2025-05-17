@@ -2,10 +2,9 @@ package org.exp.application.services.main;
 
 import com.pengrad.telegrambot.model.Message;
 import lombok.RequiredArgsConstructor;
-import org.exp.application.config.DataLoader;
 import org.exp.application.models.entity.TgUser;
-import org.exp.application.models.entity.message.Language;
 import org.exp.application.repositories.TgUserRepository;
+import org.exp.application.services.BotGameResultService;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -15,7 +14,7 @@ import java.util.Optional;
 public class TgUserService {
 
     private final TgUserRepository tgUserRepository;
-    private final DataLoader dataLoader;
+    private final BotGameResultService botGameStatusService;
 
     public Optional<TgUser> getOptionalById(Long id) {
         return tgUserRepository.findById(id);
@@ -34,12 +33,14 @@ public class TgUserService {
     }
 
     public TgUser getOrCreateTgUser(Message message) {
-        Optional<TgUser> optionalTgUser = getOptionalById(message.from().id());
-
-        if (optionalTgUser.isPresent()) return optionalTgUser.get();
-
-        return createTgUser(message);
+        return getOptionalById(message.from().id())
+                .orElseGet(() -> {
+                    TgUser newUser = createTgUser(message);
+                    botGameStatusService.insertDefaultGameStatus(newUser);
+                    return newUser;
+                });
     }
+
 
     private TgUser createTgUser(Message message) {
         Long userId = message.from().id();
@@ -50,7 +51,7 @@ public class TgUserService {
                 .id(userId)
                 .fullname(fullname)
                 .username(username)
-                .language(dataLoader.getDefLang())
+                .langCode(message.from().languageCode())
                 ._active(true)
                 .build();
 
@@ -81,13 +82,5 @@ public class TgUserService {
         } while (tgUserRepository.existsByUsername(username));
 
         return username;
-    }
-
-    public void updateMessageId(Long userId, Integer messageId) {
-        //tgUserRepository.updateMessageIdByUserId(userId, messageId);
-    }
-
-    public void updateLanguage(Long userId, Language language) {
-        tgUserRepository.updateLanguage(language, userId);
     }
 }

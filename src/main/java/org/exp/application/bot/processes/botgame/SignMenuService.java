@@ -4,12 +4,15 @@ import com.pengrad.telegrambot.model.request.InlineKeyboardMarkup;
 import lombok.RequiredArgsConstructor;
 import org.exp.application.models.entity.TgUser;
 import org.exp.application.models.entity.game.BotGame;
+import org.exp.application.models.entity.message.Translation;
+import org.exp.application.models.entity.session.SessionMenu;
 import org.exp.application.models.entity.session.UserSession;
 import org.exp.application.models.enums.GameStatus;
 import org.exp.application.services.BotGameLogic;
 import org.exp.application.services.TelegramButtonService;
 import org.exp.application.services.TelegramEditService;
 import org.exp.application.services.main.TgUserService;
+import org.exp.application.services.msg.TranslationService;
 import org.exp.application.services.session.UserSessionService;
 import org.exp.application.utils.Constants;
 import org.springframework.stereotype.Service;
@@ -27,15 +30,17 @@ public class SignMenuService {
     private final BotGameService botGameService;
     private final BotGameLogic botGameLogic;
     private final UserSessionService sessionService;
+    private final TranslationService translationService;
 
     public void sendSignMenu(Long userId, UserSession session) {  /// opt !?
         TgUser tgUser = tgUserService.getById(userId);
+        Translation translation = translationService.getTranslation(SessionMenu.SIGN, session.getLanguage());
         BotGame botGame = botGameService.getOrCreateBotGame(tgUser);
 
         Integer editMessageId = editService.editMessage(
                 tgUser.getId(), session.getMessageId(),
-                "CHOOSE_SIGN_MENU",
-                (InlineKeyboardMarkup) buttonService.menuChooseXO(botGame)
+                translation.getValue(),
+                (InlineKeyboardMarkup) buttonService.menuChooseXO(botGame.getId())
         );
 
         sessionService.updateMessageId(userId, editMessageId);
@@ -43,13 +48,15 @@ public class SignMenuService {
 
     public void sendSignMenu(Long userId) {  /// opt !?
         UserSession session = sessionService.getOrCreate(userId);
+        Translation translation = translationService.getTranslation(SessionMenu.SIGN, session.getLanguage());
+
         TgUser tgUser = tgUserService.getById(userId);
         BotGame botGame = botGameService.getOrCreateBotGame(tgUser);
 
         Integer editMessageId = editService.editMessage(
                 tgUser.getId(), session.getMessageId(),
-                "CHOOSE_SIGN_MENU",
-                (InlineKeyboardMarkup) buttonService.menuChooseXO(botGame)
+                translation.getValue(),
+                (InlineKeyboardMarkup) buttonService.menuChooseXO(botGame.getId())
         );
 
         sessionService.updateMessageId(userId, editMessageId);
@@ -96,9 +103,7 @@ public class SignMenuService {
         Integer editMessageId = editService.editMessage(
                 botGame.getPlayer().getId(),
                 session.getMessageId(),
-                "🎮 GAME BOARD" +
-                        "\nYou: " + playerSign +
-                        "\nBot: " + botSign,
+                translationService.getMessage(Constants.BOARD_MENU_MSG, session.getLanguage()).formatted(playerSign, botSign),
                 buttonService.getBoardBtns(botGame.getId(), botGame.getBoard(), botGame.getPlayerSign())
         );
         botGame.setMessageId(editMessageId);

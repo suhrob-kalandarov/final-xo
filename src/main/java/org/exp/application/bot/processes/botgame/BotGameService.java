@@ -1,24 +1,27 @@
 package org.exp.application.bot.processes.botgame;
 
-import com.pengrad.telegrambot.model.request.InlineKeyboardMarkup;
 import com.pengrad.telegrambot.model.request.ParseMode;
 import com.pengrad.telegrambot.request.EditMessageText;
 import com.pengrad.telegrambot.request.SendMessage;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.exp.application.models.entity.game.BotGame;
 import org.exp.application.models.entity.TgUser;
+import org.exp.application.models.entity.result.BotGameResult;
+import org.exp.application.models.entity.session.SessionMenu;
+import org.exp.application.models.entity.session.UserSession;
 import org.exp.application.models.enums.Difficulty;
 import org.exp.application.repositories.BotGameRepository;
-import org.exp.application.services.BotGameLogic;
-import org.exp.application.services.TelegramButtonService;
-import org.exp.application.services.TelegramEditService;
-import org.exp.application.services.TelegramSenderService;
+import org.exp.application.services.*;
 import org.exp.application.services.board.BoardBaseLogic;
 import org.exp.application.services.main.TgUserService;
+import org.exp.application.services.msg.TranslationService;
 import org.exp.application.services.session.UserSessionService;
 import org.exp.application.utils.Constants;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import static org.exp.application.utils.Constants.*;
@@ -33,11 +36,15 @@ public class BotGameService {
 
     private final TgUserService tgUserService;
 
+    private final TranslationService translationService;
+
     private final UserSessionService sessionService;
 
     private final TelegramSenderService senderService;
     private final TelegramEditService editService;
     private final TelegramButtonService buttonService;
+
+    private final BotGameResultService resultService;
 
     public void handleMove(String data){
         try {
@@ -78,13 +85,13 @@ public class BotGameService {
             botGameRepository.save(botGame);
 
             if (boardBaseLogic.checkWin(board, 1)) {
-                //tgUserService.incrementWin(botGame.getPlayer(), botGame.getDifficulty());
+                resultService.incrementWin(botGame.getPlayer().getId(), botGame.getDifficulty());
                 sendResult(botGame, YOU_WON_MSG);
                 return;
             }
 
             if (boardBaseLogic.isBoardFull(board)) {
-                //tgUserService.incrementDraw(botGame.getPlayer(), botGame.getDifficulty());
+                resultService.incrementDraw(botGame.getPlayer().getId(), botGame.getDifficulty());
                 sendResult(botGame, DRAW_MSG);
                 return;
             }
@@ -95,13 +102,13 @@ public class BotGameService {
             botGameRepository.save(botGame);
 
             if (boardBaseLogic.checkWin(board, 2)) {
-                //tgUserService.incrementLose(botGame.getPlayer(), botGame.getDifficulty());
+                resultService.incrementLose(botGame.getPlayer().getId(), botGame.getDifficulty());
                 sendResult(botGame, YOU_LOST_MSG);
                 return;
             }
 
             if (boardBaseLogic.isBoardFull(board)) {
-                //tgUserService.incrementDraw(botGame.getPlayer(), botGame.getDifficulty());
+                resultService.incrementDraw(botGame.getPlayer().getId(), botGame.getDifficulty());
                 sendResult(botGame, DRAW_MSG);
                 return;
             }
@@ -114,28 +121,24 @@ public class BotGameService {
     }
 
     private void updateGameBoard(BotGame botGame) {
+        UserSession session = sessionService.getOrCreate(botGame.getPlayer().getId());
         String playerSign = botGame.getPlayerSign();
         String botSign = getBotSymbol(playerSign);
 
         Integer editMessageId = editService.editMessage(
                 botGame.getPlayer().getId(),
                 botGame.getMessageId(),
-                "🎮 GAME BOARD" +
-                        "\nYou: " + playerSign +
-                        "\nBot: " + botSign,
-                buttonService.getBoardBtns(
-                        botGame.getId(),
-                        botGame.getBoard(),
-                        botGame.getPlayerSign()
-                )
+                translationService.getMessage(BOARD_MENU_MSG, session.getLanguage())
+                        .formatted(playerSign, botSign),
+                buttonService.getBoardBtns(botGame.getId(), botGame.getBoard(), botGame.getPlayerSign())
         );
 
         botGame.setMessageId(editMessageId);
         save(botGame);
     }
 
-    private void sendResult(BotGame botGame, String resultMessage) {
-        TgUser player = botGame.getPlayer();
+    @Transactional
+    public void sendResult(BotGame botGame, String resultMessage) {
         int[][] board = botGame.getBoard();
 
         senderService.execute(getResultMessageText(botGame, resultMessage, formatBoard(botGame.getPlayerSign(), board)));
@@ -143,55 +146,40 @@ public class BotGameService {
         sendMenu(botGame);
     }
 
+    @Transactional
     public void sendMenu(BotGame botGame){
+        UserSession session = sessionService.getOrCreate(botGame.getPlayer().getId());
+        Map<String, String> translations = translationService.getTranslationsMap(SessionMenu.BOT_GAME, session.getLanguage());
+
+        List<BotGameResult> stats = resultService.getResultsByUser(botGame.getPlayer().getId());
+        String statisticsText = resultService.formatGameStatistics(stats);
+
+        String messageText = translationService.getMessage(BOT_GAME_STATISTICS_MSG, session.getLanguage())
+                .formatted(statisticsText);
+
         int newMessageId = senderService.execute(
-                new SendMessage(
-                        botGame.getPlayer().getId(),
-                        getStatMessage()
-                )
+                new SendMessage(botGame.getPlayer().getId(), messageText)
                         .parseMode(ParseMode.HTML)
-                        .replyMarkup(buttonService.botGameMenuBtns())
+                        .replyMarkup(buttonService.botGameMenuBtns(translations))
         );
+
 
         sessionService.updateMessageId(botGame.getPlayer().getId(), newMessageId);
         botGame.initializeBoard();
         save(botGame);
     }
 
-    public void editAndSendMenu(BotGame botGame, Integer messageId){
-        Long userId = botGame.getPlayer().getId();
-        int editMessageId = editService.editMessage(
-                userId,
-                messageId,
-                getStatMessage(),
-                (InlineKeyboardMarkup) buttonService.botGameMenuBtns(),
-                ParseMode.HTML
-        );
+    @Transactional
+    public EditMessageText getResultMessageText(BotGame botGame, String resultMessage, String boardState) {
+        UserSession session = sessionService.getOrCreate(botGame.getPlayer().getId());
+        Map<String, String> translationsMap = translationService.getTranslationsMap(SessionMenu.BOARD, session.getLanguage());
 
-        botGame.setMessageId(editMessageId);
-        botGame.initializeBoard();
-        save(botGame);
-    }
-
-    public String getStatMessage() {
-        return USER_STATISTICS_MSG.formatted(
-                """
-                        \s\s\s\s\s🏆   ⚖️   😭
-                        EA👶
-                        ME😎
-                        HA😈
-                        EE🥶
-                        """
-        );
-    }
-
-
-    private EditMessageText getResultMessageText(BotGame botGame, String resultMessage, String boardState) {
+        String levelKey = "level_" + botGame.getDifficulty().name().toLowerCase();
 
         return new EditMessageText(
                 botGame.getPlayer().getId(),
                 botGame.getMessageId(),
-                RESULT_MSG.formatted(resultMessage, botGame.getDifficulty(), "Board:")  + boardState
+                RESULT_MSG.formatted(translationsMap.get(resultMessage), translationService.getMessage(levelKey, session.getLanguage()), translationsMap.get(BOARD_MSG))  + boardState
         ).parseMode(ParseMode.HTML);
     }
 

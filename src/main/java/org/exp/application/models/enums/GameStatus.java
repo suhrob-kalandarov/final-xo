@@ -8,5 +8,8 @@ public enum GameStatus {
 
     IN_GAME,
 
-    END
+    END,
+
+    INACTIVE,
+    BLOCKED,
 }
