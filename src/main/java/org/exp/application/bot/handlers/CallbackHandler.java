@@ -82,7 +82,7 @@ public class CallbackHandler implements DataHandler<CallbackQuery> {
             } else if (data.startsWith("back-to_")) {
                 backButtonService.execute(data, userId);
 
-            } else if (data.equals("get-bot-info")) {
+            } else if (data.equals("getOrCreate-bot-info")) {
                 infoService.sendInfoMenu(userId);
             }
 

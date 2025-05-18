@@ -23,7 +23,7 @@ public class LangLoader {
                         .menu(SessionMenu.HOME)
                         .language(lang)
                         .key(Constants.HOME_MSG)
-                        .value("Welcome to the game! 🎮")
+                        .value("👤%s\nWelcome to the game! 🎮")
                         .build(),
 
                 Translation.builder()
@@ -58,7 +58,6 @@ public class LangLoader {
                         .value("🌍Choose Language:")
                         .build(),
 
-
                 Translation.builder()
                         ._active(true)
                         .menu(SessionMenu.HOME)
@@ -66,16 +65,6 @@ public class LangLoader {
                         .key(Constants.SUPPORT_BTN)
                         .value("📩Support")
                         .build(),
-
-                /*Translation.builder()
-                        ._active(true)
-                        .menu(SessionMenu.HOME)
-                        .language(lang)
-                        .key(Constants.HOME_MSG)
-                        .value("Welcome to the game! \uD83C\uDFAE")
-                        .build(),
-
-                */
 
                 Translation.builder()
                         ._active(true)
@@ -166,7 +155,7 @@ public class LangLoader {
                         .menu(SessionMenu.BOARD)
                         .language(lang)
                         .key(Constants.BOARD_MSG)
-                        .value("Board")
+                        .value("Board:")
                         .build(),
 
                 Translation.builder()
@@ -214,7 +203,7 @@ public class LangLoader {
                         .menu(SessionMenu.HOME)
                         .language(lang2)
                         .key(Constants.HOME_MSG)
-                        .value("Добро пожаловать в игру! 🎮")
+                        .value("👤%s\nДобро пожаловать в игру! 🎮")
                         .build(),
 
                 Translation.builder()
@@ -348,7 +337,7 @@ public class LangLoader {
                         .menu(SessionMenu.BOARD)
                         .language(lang2)
                         .key(Constants.BOARD_MSG)
-                        .value("Поле")
+                        .value("Поле:")
                         .build(),
 
                 Translation.builder()

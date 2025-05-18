@@ -16,12 +16,18 @@ public class UserSessionService {
     private final LanguageRepository languageRepository;
 
     public UserSession getOrCreate(Long userId) {
-        Language language = languageRepository.findById(1L).get();
-        return repository.findById(userId)
-                .orElseGet(() -> repository.save(
-                        UserSession.builder().userId(userId).language(language).build()
-                ));
+        return repository.findById(userId).orElseGet(() -> {
+            Language defaultLang = languageRepository.findById(1L)
+                    .orElseThrow(() -> new IllegalStateException("Default language not found"));
+            return repository.save(
+                    UserSession.builder()
+                            .userId(userId)
+                            .language(defaultLang)
+                            .build()
+            );
+        });
     }
+
 
     public void updateMessageId(Long userId, Integer messageId) {
         UserSession session = getOrCreate(userId);

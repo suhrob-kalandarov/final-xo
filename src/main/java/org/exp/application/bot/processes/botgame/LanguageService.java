@@ -4,8 +4,6 @@ import com.pengrad.telegrambot.model.request.InlineKeyboardMarkup;
 import lombok.RequiredArgsConstructor;
 import org.exp.application.bot.processes.CabinetService;
 import org.exp.application.models.entity.message.Language;
-import org.exp.application.models.entity.message.Translation;
-import org.exp.application.models.entity.session.SessionMenu;
 import org.exp.application.models.entity.session.UserSession;
 import org.exp.application.repositories.common.LanguageRepository;
 import org.exp.application.services.TelegramButtonService;
@@ -27,10 +25,12 @@ public class LanguageService {
 
     public void sendLangMenu(Long userId) {
         UserSession session = sessionService.getOrCreate(userId);
-        Translation translation = translationService.getTranslation(SessionMenu.LANGUAGE, session.getLanguage());
+        //Translation translation = translationService.getTranslation(SessionMenu.LANGUAGE, session.getLanguage());
         Integer messageId = editService.editMessage(
                 userId, session.getMessageId(),
-                translation.getValue(),
+                """
+                        🇷🇺Выберите язык
+                        🇺🇸Choose language""",
                 (InlineKeyboardMarkup) buttonService.langMenuBtns()
         );
         sessionService.updateMessageId(userId, messageId);

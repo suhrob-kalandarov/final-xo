@@ -48,11 +48,11 @@ public class BotGameResultService {
         BotGameResult extreme = findByDifficulty(results, Difficulty.EXTREME);
 
         return """
-            \s\s\s\s🏆   ⚖️   😭
-            😺: %d    %d    %d
-            🧠: %d    %d    %d
-            😈: %d    %d    %d
-            💀: %d    %d    %d
+            \s\s\s\s\s🏆   ⚖️   😭
+            😺:  %d    %d    %d
+            🧠:  %d    %d    %d
+            😈:  %d    %d    %d
+            💀:  %d    %d    %d
             """.formatted(
                 easy.getWinCount(), easy.getDrawCount(), easy.getLoseCount(),
                 medium.getWinCount(), medium.getDrawCount(), medium.getLoseCount(),

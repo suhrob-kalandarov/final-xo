@@ -24,7 +24,7 @@ public class TelegramButtonService {
         ).addRow(
                 new InlineKeyboardButton(messages.get(PLAY_WITH_FRIEND_BTN)).switchInlineQuery(" play")
         ).addRow(
-                new InlineKeyboardButton(messages.get(SUPPORT_BTN)).callbackData("user-get-bot-info"),
+                new InlineKeyboardButton(messages.get(SUPPORT_BTN)).callbackData("user-getOrCreate-bot-info"),
                 new InlineKeyboardButton(messages.get(LANGUAGE_BTN)).callbackData("user-language")
         );
     }
