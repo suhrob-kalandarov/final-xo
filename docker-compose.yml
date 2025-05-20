@@ -1,0 +1,33 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15
+    container_name: postgres_db
+    restart: always
+    environment:
+      POSTGRES_DB: xo_demo_bot
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: root123
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+  telegram-bot:
+    build: .
+    container_name: telegram_bot
+    restart: always
+    depends_on:
+      - postgres
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/xo_demo_bot
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: root123
+      TELEGRAM_BOT_TOKEN: 7955275273:AAHBfrObu4K13owbah27Jyp54CiDTgxgiEc
+    ports:
+      - "8080:8080"
+
+volumes:
+  postgres_data:
