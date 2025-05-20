@@ -85,12 +85,21 @@ public class MultiGameService {
     }
 
     public MultiGame getOrCreateMultiGame(Long creatorId) {
-        MultiGame multiGame = MultiGame.builder()
-                .creatorId(creatorId)
-                .status(GameStatus.CREATED)
-                .board(new int[3][3])
-                .build();
+        Optional<MultiGame> multiGameOptional = gameRepository.findFirstByStatus(GameStatus.IDLE);
+        MultiGame multiGame;
 
+        if (multiGameOptional.isPresent()) {
+            multiGame = multiGameOptional.get();
+            multiGame.setStatus(GameStatus.PROGRESS);
+            return multiGame;
+
+        } else {
+            multiGame = MultiGame.builder()
+                    .creatorId(creatorId)
+                    .status(GameStatus.CREATED)
+                    .board(new int[3][3])
+                    .build();
+        }
         return saveReturn(multiGame);
     }
 

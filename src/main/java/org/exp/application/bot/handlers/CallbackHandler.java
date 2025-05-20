@@ -28,15 +28,10 @@ public class CallbackHandler implements DataHandler<CallbackQuery> {
         String data = callbackQuery.data();
         Long userId = callbackQuery.from().id();
 
-        if (data.startsWith("MOVE_")) {
+        if (data.startsWith("MOVE_") || data.startsWith("SELECT_X_")) {
             multiGameService.execute(callbackQuery);
-        }
 
-        if (data.startsWith("SELECT_X_")) {
-            multiGameService.execute(callbackQuery);
-        }
-
-        if (data.startsWith("bot-")){
+        } else if (data.startsWith("bot-")){
             data = extractCleanData(data, "bot-");
 
             if (data==null) return;
@@ -95,5 +90,4 @@ public class CallbackHandler implements DataHandler<CallbackQuery> {
     private String extractCleanData(String data, String prefix) {
         return data.startsWith(prefix) ? data.substring(prefix.length()) : null;
     }
-
 }

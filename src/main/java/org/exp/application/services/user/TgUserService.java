@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.exp.application.models.entity.TgUser;
 import org.exp.application.repositories.common.TgUserRepository;
 import org.exp.application.services.botgame.BotGameResultService;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -34,8 +35,9 @@ public class TgUserService {
         return tgUserRepository.save(tgUser);
     }
 
-    public TgUser getOrCreateTgUser(Message message) {
-        return getOptionalById(message.from().id())
+    @Async
+    public void getOrCreateTgUser(Message message) {
+        getOptionalById(message.from().id())
                 .orElseGet(() -> {
                     TgUser newUser = createTgUser(message);
                     botGameStatusService.insertDefaultGameStatus(newUser);
@@ -124,14 +126,16 @@ public class TgUserService {
         return username;
     }
 
-    public TgUser getOrCreateTgUser(InlineQuery inlineQuery) {
-        return getOptionalById(inlineQuery.from().id())
+    @Async
+    public void getOrCreateTgUserAsync(InlineQuery inlineQuery) {
+        getOptionalById(inlineQuery.from().id())
                 .orElseGet(() -> {
                     TgUser newUser = createTgUser(inlineQuery);
                     botGameStatusService.insertDefaultGameStatus(newUser);
                     return newUser;
                 });
     }
+
 
     private TgUser createTgUser(InlineQuery inlineQuery) {
         Long userId = inlineQuery.from().id();

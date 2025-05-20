@@ -5,7 +5,6 @@ import com.pengrad.telegrambot.model.CallbackQuery;
 import com.pengrad.telegrambot.model.request.InlineKeyboardMarkup;
 import com.pengrad.telegrambot.model.request.ParseMode;
 import com.pengrad.telegrambot.request.AnswerCallbackQuery;
-import com.pengrad.telegrambot.request.EditMessageReplyMarkup;
 import com.pengrad.telegrambot.request.EditMessageText;
 import org.exp.application.models.entity.game.MultiGame;
 import org.exp.application.models.enums.GameStatus;
@@ -25,18 +24,12 @@ public class MultiGameLogicService {
 
     private final TelegramBot telegramBot;
     private final TelegramButtonService buttonService;
-
     private final MultiGameRepository gameRepository;
     private final BoardBaseLogic baseLogic;
+    private final MultiGameCleanerService boardCleaner;
 
     public void handleMove(Long gameId, int row, int col, CallbackQuery callbackQuery) {
-        //String data = callbackQuery.data();
         Long userId = callbackQuery.from().id();
-
-        /*String[] parts = data.split("_");
-        int row = Integer.parseInt(parts[2]);
-        int col = Integer.parseInt(parts[3]);*/
-
         Optional<MultiGame> optionalGame = gameRepository.findById(gameId);
 
         if (optionalGame.isEmpty()) {
@@ -57,10 +50,18 @@ public class MultiGameLogicService {
             return;
         }
 
+        // 🔒 Qo‘shimcha himoya: PlayerO hali yo‘q va PlayerX o‘zi yana bosmoqda
+        if (game.getPlayerO() == null && userId.equals(game.getPlayerX().getId())) {
+            telegramBot.execute(new AnswerCallbackQuery(callbackQuery.id())
+                    .text("Wait for second player to join!")
+                    .showAlert(true));
+            return;
+        }
+
         // 1. O'yinchi tekshiruvi (gamega tegishliligi)
         if (game.getPlayerX() == null || game.getPlayerO() == null) {
             telegramBot.execute(new AnswerCallbackQuery(callbackQuery.id())
-                    .text("Game is not ready yet! Waiting for second player...")
+                    .text("Game is not ready yet! \nWaiting for second player...")
                     .showAlert(true));
             return;
         }
@@ -75,8 +76,7 @@ public class MultiGameLogicService {
 
         // 3. Navbat tekshiruvi
         if ((game.getInTurn() == Turn.X && !userId.equals(game.getPlayerX().getId())) ||
-                game.getPlayerO() != null && (game.getInTurn() == Turn.O && !userId.equals(game.getPlayerO().getId())))
-        {
+                game.getPlayerO() != null && (game.getInTurn() == Turn.O && !userId.equals(game.getPlayerO().getId()))) {
 
             telegramBot.execute(new AnswerCallbackQuery(callbackQuery.id())
                     .text("Not your turn! Wait for your opponent.")
@@ -89,7 +89,7 @@ public class MultiGameLogicService {
         }
 
         if (board[row][col] != 0) {
-            telegramBot.execute(new AnswerCallbackQuery(callbackQuery.id()).text("Invalid move! 👈"));
+            telegramBot.execute(new AnswerCallbackQuery(callbackQuery.id()).text("Invalid move! 👈").showAlert(true));
             return;
         }
 
@@ -107,7 +107,7 @@ public class MultiGameLogicService {
 
             EditMessageText winMessage = new EditMessageText(
                     game.getInlineMessageId(),
-                    "🏆"+ winnerName
+                    "🏆" + winnerName
                             + "\n\uD83D\uDE2D\uFE0F\uFE0F\uFE0F\uFE0F\uFE0F️" + loserName
                             //+ "\n🏆Winner, winner, chicken dinner! "
                             + "\n\n<b>Board:</b>" + formatBoard(game.getBoard())
@@ -116,6 +116,9 @@ public class MultiGameLogicService {
                     .replyMarkup(buttonService.endMultiGameBtns());
 
             telegramBot.execute(winMessage);
+
+            boardCleaner.cleanAndUpdate(game);
+            /// history result
 
         } else if (baseLogic.checkDraw(board)) {
             game.setStatus(GameStatus.FINISHED);
@@ -129,22 +132,11 @@ public class MultiGameLogicService {
                     .replyMarkup(buttonService.endMultiGameBtns());
 
             telegramBot.execute(drawMessage);
+            boardCleaner.cleanAndUpdate(game);
+            /// history result
 
         } else {
-
             switchTurn(game);
-
-            /*if (game.getPlayerO() != null) {
-            } else {
-                game.setInTurn(Turn.PLAYER_O);
-            }*/
-
-            /*EditMessageReplyMarkup replyMarkup = new EditMessageReplyMarkup(
-                    game.getInlineMessageId()
-            ).replyMarkup(markup);
-            telegramBot.execute(replyMarkup);
-            */
-
             InlineKeyboardMarkup markup = buttonService.getMultiBoardBtns(gameId, board);
 
             String text;
@@ -155,14 +147,11 @@ public class MultiGameLogicService {
                 text = "❌" + game.getPlayerX().getFullname() + "\n" +
                         "⭕" + game.getPlayerO().getFullname() + " 👈";
             }
-
             telegramBot.execute(
                     new EditMessageText(game.getInlineMessageId(), text)
                             .replyMarkup(markup)
             );
-
         }
-
         gameRepository.save(game);
     }
 
@@ -195,5 +184,4 @@ public class MultiGameLogicService {
         sb.append("</pre>");
         return sb.toString();
     }
-
 }

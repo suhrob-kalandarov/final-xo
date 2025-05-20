@@ -1,3 +1,4 @@
+/*
 package org.exp.application.models.basekeys;
 
 import jakarta.persistence.Column;
@@ -25,3 +26,4 @@ public class BaseResult extends BaseEntity{
     @Column(name = "lose_count")
     private int loseCount;
 }
+*/
