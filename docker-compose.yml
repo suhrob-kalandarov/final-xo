@@ -6,7 +6,7 @@ services:
     container_name: postgres_db
     restart: always
     environment:
-      POSTGRES_DB: xo_demo_bot
+      POSTGRES_DB: xo_game_db
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: root123
     volumes:
@@ -22,7 +22,7 @@ services:
       - postgres
     environment:
       SPRING_PROFILES_ACTIVE: prod
-      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/xo_demo_bot
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/xo_game_db
       SPRING_DATASOURCE_USERNAME: postgres
       SPRING_DATASOURCE_PASSWORD: root123
       TELEGRAM_BOT_TOKEN: 7955275273:AAHBfrObu4K13owbah27Jyp54CiDTgxgiEc
