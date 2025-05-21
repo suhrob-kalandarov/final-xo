@@ -25,7 +25,7 @@ services:
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/xo_game_db
       SPRING_DATASOURCE_USERNAME: postgres
       SPRING_DATASOURCE_PASSWORD: root123
-      TELEGRAM_BOT_TOKEN: 7955275273:AAHBfrObu4K13owbah27Jyp54CiDTgxgiEc
+      TELEGRAM_BOT_TOKEN: 8126773585:AAFLG2ccqsigrKEC-zoY9mhXaTgZYeeeuTc
     ports:
       - "8080:8080"
 
