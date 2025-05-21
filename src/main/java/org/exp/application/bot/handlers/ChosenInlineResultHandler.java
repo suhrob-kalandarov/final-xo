@@ -44,36 +44,3 @@ public class ChosenInlineResultHandler implements DataHandler<ChosenInlineResult
         }
     }
 }
-
-/*
-@Override
-    public void handle(ChosenInlineResult chosenInlineResult) {
-        String inlinedMessageId = chosenInlineResult.inlineMessageId();
-        String resultId = chosenInlineResult.resultId();
-        Pattern pattern = Pattern.compile("selected_[xo]_(\\d+)");
-        Matcher matcher = pattern.matcher(resultId);
-
-        if (!matcher.matches()) {
-            System.err.println("Not matches :!: " + matcher);
-            return;
-        }
-
-        Long gameId = Long.parseLong(matcher.group(1));
-        Optional<MultiGame> optionalMultiGame = gameService.findById(gameId);
-
-        if (optionalMultiGame.isEmpty()) {
-            System.err.println("Not found optionalMultiGame = " + optionalMultiGame);
-            return;
-        }
-
-        MultiGame multiGame = optionalMultiGame.get();
-        multiGame.setInlineMessageId(inlinedMessageId);
-        TgUser multiGameUser = tgUserService.getById(chosenInlineResult.from().id());
-
-        if (resultId.startsWith("selected_x")) {
-            multiGame.setPlayerX(multiGameUser);
-            multiGame.setInTurn(Turn.X);
-        }
-        gameService.save(multiGame);
-    }
- */
