@@ -32,7 +32,10 @@ public class ChosenInlineResultHandler implements DataHandler<ChosenInlineResult
         try {
             Long gameId = Long.parseLong(resultId.substring("selected_x_".length()));
             MultiGame multiGame = gameService.findById(gameId).orElse(null);
-            if (multiGame == null) return;
+            if (multiGame == null) {
+                log.error("MultiGame not found for ID: {}", gameId);
+                return;
+            }
 
             multiGame.setInlineMessageId(chosenInlineResult.inlineMessageId());
             multiGame.setStatus(GameStatus.PROGRESS);
@@ -41,16 +44,27 @@ public class ChosenInlineResultHandler implements DataHandler<ChosenInlineResult
             TgUser tgUser;
             if (optionalTgUser.isEmpty()) {
                 tgUser = tgUserService.getOrCreateTgUserAsync(chosenInlineResult);
+                log.info("Created new TgUser with ID: {}", tgUser.getId());
             } else {
                 tgUser = optionalTgUser.get();
+                log.info("Found TgUser with ID: {}", tgUser.getId());
             }
+
+            if (tgUser == null) {
+                log.error("TgUser is null for Telegram ID: {}", chosenInlineResult.from().id());
+                return;
+            }
+
             multiGame.setPlayerX(tgUser);
             multiGame.set_active(true);
             multiGame.setInTurn(Turn.X);
             multiGame.setUpdatedAt(LocalDateTime.now());
-            gameService.save(multiGame);
+
+            MultiGame savedGame = gameService.saveReturn(multiGame);
+            log.info("Saved MultiGame ID: {}, PlayerX ID: {}", savedGame.getId(), savedGame.getPlayerX() != null ? savedGame.getPlayerX().getId() : "null");
+
         } catch (Exception e) {
-            log.error("ChosenInlineResult handle error: {}", e.getMessage());
+            log.error("ChosenInlineResult handle error: {}", e.getMessage(), e);
         }
     }
 }
