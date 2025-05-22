@@ -1,6 +1,7 @@
 package org.exp.application.bot.handlers;
 
 import com.pengrad.telegrambot.model.ChosenInlineResult;
+import jakarta.transaction.Transactional;
 import org.exp.application.bot.processes.multigame.MultiGameService;
 import org.exp.application.models.entity.TgUser;
 import org.exp.application.models.entity.game.MultiGame;
@@ -23,11 +24,16 @@ public class ChosenInlineResultHandler implements DataHandler<ChosenInlineResult
     private final TgUserService tgUserService;
     private final MultiGameService gameService;
 
+    @Transactional
     @Override
     public void handle(ChosenInlineResult chosenInlineResult) {
+        System.out.println("ChosenInlineResultHandler.handle " + chosenInlineResult.toString());
         String resultId = chosenInlineResult.resultId();
 
-        if (!resultId.startsWith("selected_x_")) return;
+        if (!resultId.startsWith("selected_x_")) {
+            log.debug("Result ID does not start with 'selected_x_': {}", resultId);
+            return;
+        }
 
         try {
             Long gameId = Long.parseLong(resultId.substring("selected_x_".length()));
@@ -40,18 +46,19 @@ public class ChosenInlineResultHandler implements DataHandler<ChosenInlineResult
             multiGame.setInlineMessageId(chosenInlineResult.inlineMessageId());
             multiGame.setStatus(GameStatus.PROGRESS);
 
-            Optional<TgUser> optionalTgUser = tgUserService.getFindById(chosenInlineResult.from().id());
+            Long telegramId = chosenInlineResult.from().id();
+            Optional<TgUser> optionalTgUser = tgUserService.getFindById(telegramId);
             TgUser tgUser;
             if (optionalTgUser.isEmpty()) {
                 tgUser = tgUserService.getOrCreateTgUserAsync(chosenInlineResult);
-                log.info("Created new TgUser with ID: {}", tgUser.getId());
+                log.info("Created new TgUser with ID: {}, Fullname: {}", tgUser.getId(), tgUser.getFullname());
             } else {
                 tgUser = optionalTgUser.get();
-                log.info("Found TgUser with ID: {}", tgUser.getId());
+                log.info("Found TgUser with ID: {}, Fullname: {}", tgUser.getId(), tgUser.getFullname());
             }
 
             if (tgUser == null) {
-                log.error("TgUser is null for Telegram ID: {}", chosenInlineResult.from().id());
+                log.error("TgUser is null for Telegram ID: {}", telegramId);
                 return;
             }
 
