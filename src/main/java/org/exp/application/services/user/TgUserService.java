@@ -138,13 +138,13 @@ public class TgUserService {
                 });
     }
 
-    public String getOrCreateTgUser(InlineQuery inlineQuery) {
+    public TgUser getOrCreateTgUser(InlineQuery inlineQuery) {
         return getOptionalById(inlineQuery.from().id())
                 .orElseGet(() -> {
                     TgUser newUser = createTgUser(inlineQuery);
                     botGameStatusService.insertDefaultGameStatus(newUser);
                     return newUser;
-                }).getFullname();
+                });
     }
 
 
