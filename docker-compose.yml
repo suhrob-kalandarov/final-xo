@@ -3,7 +3,7 @@ version: '3.8'
 services:
   postgres:
     image: postgres:15
-    container_name: postgres_db
+    container_name: game_db
     restart: always
     environment:
       POSTGRES_DB: xo_game_db
@@ -16,7 +16,7 @@ services:
 
   telegram-bot:
     build: .
-    container_name: telegram_bot
+    container_name: game_bot
     restart: always
     depends_on:
       - postgres
