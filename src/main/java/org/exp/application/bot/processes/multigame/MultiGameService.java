@@ -47,7 +47,7 @@ public class MultiGameService {
         MultiGame multiGame = optionalMultiGame.get();
 
         if (multiGame.getPlayerX() == null || multiGame.getPlayerO() == null) {
-            multiGame = gamePlayersInfoFiller(multiGame, callbackQuery);
+            gamePlayersInfoFiller(multiGame, callbackQuery);
         }
 
         if (data.startsWith("MOVE_")) {
@@ -85,7 +85,7 @@ public class MultiGameService {
     }
 
     public MultiGame getOrCreateMultiGame(Long creatorId) {
-        /*Optional<MultiGame> multiGameOptional = gameRepository.findFirstByStatus(GameStatus.IDLE);
+        Optional<MultiGame> multiGameOptional = gameRepository.findFirstByStatus(GameStatus.IDLE);
         MultiGame multiGame;
 
         if (multiGameOptional.isPresent()) {
@@ -99,14 +99,8 @@ public class MultiGameService {
                     .status(GameStatus.CREATED)
                     .board(new int[3][3])
                     .build();
-        }*/
-        return saveReturn(
-                MultiGame.builder()
-                        .creatorId(creatorId)
-                        .status(GameStatus.CREATED)
-                        .board(new int[3][3])
-                        .build()
-        );
+        }
+        return multiGame;
     }
 
     public Optional<MultiGame> findById(Long gameId) {
