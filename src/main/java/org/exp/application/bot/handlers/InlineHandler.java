@@ -47,7 +47,7 @@ public class InlineHandler implements DataHandler<InlineQuery> {
             };
             telegramBot.execute(
                     new AnswerInlineQuery(inlineQuery.id(), results)
-                            .button(new InlineQueryResultsButton("@xoDemoBot", "bot_uri"))
+                            .button(new InlineQueryResultsButton("@xoBrainBot", "bot_uri"))
             );
         } catch (Exception e) {
             e.printStackTrace();
