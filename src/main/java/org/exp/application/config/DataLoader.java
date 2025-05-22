@@ -16,7 +16,6 @@ import java.util.List;
 @RequiredArgsConstructor
 public class DataLoader implements CommandLineRunner {
 
-    private final TgUserRepository tgUserRepository;
     private final LanguageRepository languageRepository;
     private final TranslationRepository translationRepository;
     private final LangLoader langLoader;

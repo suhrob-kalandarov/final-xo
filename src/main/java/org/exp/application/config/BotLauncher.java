@@ -29,7 +29,6 @@ public class BotLauncher implements CommandLineRunner {
         bot.setUpdatesListener(updates -> {
             for (Update update : updates) {
                 executorService.executorService().execute(() -> {
-                    System.out.println("WWW update.chosenInlineResult() = " + update.chosenInlineResult());
                     if (update.message() != null) {
                         messageHandler.handle(update.message());
 
