@@ -6,9 +6,9 @@ services:
     container_name: game_db
     restart: always
     environment:
-      POSTGRES_DB: xo_game_db
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: root123
+      POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
+      POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
+      POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
     volumes:
       - postgres_data:/var/lib/postgresql/data
     ports:
@@ -22,10 +22,10 @@ services:
       - postgres
     environment:
       SPRING_PROFILES_ACTIVE: prod
-      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/xo_game_db
-      SPRING_DATASOURCE_USERNAME: postgres
-      SPRING_DATASOURCE_PASSWORD: root123
-      TELEGRAM_BOT_TOKEN: 8126773585:AAFLG2ccqsigrKEC-zoY9mhXaTgZYeeeuTc
+      SPRING_DATASOURCE_URL: ${{ secrets.SPRING_DATASOURCE_URL }}
+      SPRING_DATASOURCE_USERNAME: ${{ secrets.SPRING_DATASOURCE_USERNAME }}
+      SPRING_DATASOURCE_PASSWORD: ${{ secrets.SPRING_DATASOURCE_PASSWORD }}
+      TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
     ports:
       - "8080:8080"
 
