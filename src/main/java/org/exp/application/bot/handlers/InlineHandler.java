@@ -31,8 +31,8 @@ public class InlineHandler implements DataHandler<InlineQuery> {
         try {
             Long creatorId = inlineQuery.from().id();
             /// user checking
-            userService.getOrCreateTgUser(inlineQuery);
-            String fullName = userService.buildFullNameFromUpdate(inlineQuery);
+            String fullName = userService.getOrCreateTgUser(inlineQuery);
+            //String fullName = userService.buildFullNameFromUpdate(inlineQuery);
             MultiGame multiGame = gameService.getOrCreateMultiGame(creatorId);
 
             InlineQueryResult[] results = new InlineQueryResult[]{

@@ -85,7 +85,7 @@ public class MultiGameService {
     }
 
     public MultiGame getOrCreateMultiGame(Long creatorId) {
-        Optional<MultiGame> multiGameOptional = gameRepository.findFirstByStatus(GameStatus.IDLE);
+        /*Optional<MultiGame> multiGameOptional = gameRepository.findFirstByStatus(GameStatus.IDLE);
         MultiGame multiGame;
 
         if (multiGameOptional.isPresent()) {
@@ -99,8 +99,14 @@ public class MultiGameService {
                     .status(GameStatus.CREATED)
                     .board(new int[3][3])
                     .build();
-        }
-        return saveReturn(multiGame);
+        }*/
+        return saveReturn(
+                MultiGame.builder()
+                        .creatorId(creatorId)
+                        .status(GameStatus.CREATED)
+                        .board(new int[3][3])
+                        .build()
+        );
     }
 
     public Optional<MultiGame> findById(Long gameId) {
