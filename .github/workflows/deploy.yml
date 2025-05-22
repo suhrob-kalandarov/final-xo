@@ -31,6 +31,9 @@ jobs:
             target/app.jar
             docker-compose.yml
           target: /home/ubuntu/final-xo
+          port: 22
+          timeout: 30s
+          command_timeout: 10m
 
       - name: SSH and deploy on server
         uses: appleboy/ssh-action@v0.1.6
