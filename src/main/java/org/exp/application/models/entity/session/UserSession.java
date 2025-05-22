@@ -5,6 +5,9 @@ import lombok.*;
 import lombok.experimental.SuperBuilder;
 import org.exp.application.models.basekeys.BaseDate;
 import org.exp.application.models.entity.message.Language;
+import org.hibernate.proxy.HibernateProxy;
+
+import java.util.Objects;
 
 @Getter
 @Setter
@@ -17,12 +20,6 @@ public class UserSession extends BaseDate {
     @Id
     @Column(unique = true)
     private Long userId;
-
-   /* @Id
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
-    private TgUser botUser;
-    */
 
     @Column(name = "message_id")
     private Integer messageId;
@@ -39,4 +36,26 @@ public class UserSession extends BaseDate {
     private String lastCallbackData;
 
     private boolean _active;
+
+    @Override
+    public final boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null) return false;
+        Class<?> oEffectiveClass = o instanceof HibernateProxy ? ((HibernateProxy) o).getHibernateLazyInitializer().getPersistentClass() : o.getClass();
+        Class<?> thisEffectiveClass = this instanceof HibernateProxy ? ((HibernateProxy) this).getHibernateLazyInitializer().getPersistentClass() : this.getClass();
+        if (thisEffectiveClass != oEffectiveClass) return false;
+        UserSession that = (UserSession) o;
+        return getUserId() != null && Objects.equals(getUserId(), that.getUserId());
+    }
+
+    @Override
+    public final int hashCode() {
+        return this instanceof HibernateProxy ? ((HibernateProxy) this).getHibernateLazyInitializer().getPersistentClass().hashCode() : getClass().hashCode();
+    }
 }
+
+/* @Id
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private TgUser botUser;
+    */
