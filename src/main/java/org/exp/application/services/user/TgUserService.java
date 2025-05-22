@@ -1,9 +1,11 @@
 package org.exp.application.services.user;
 
 import com.pengrad.telegrambot.model.CallbackQuery;
+import com.pengrad.telegrambot.model.ChosenInlineResult;
 import com.pengrad.telegrambot.model.InlineQuery;
 import com.pengrad.telegrambot.model.Message;
 import lombok.RequiredArgsConstructor;
+import org.exp.application.bot.handlers.ChosenInlineResultHandler;
 import org.exp.application.models.entity.TgUser;
 import org.exp.application.repositories.common.TgUserRepository;
 import org.exp.application.services.botgame.BotGameResultService;
@@ -175,5 +177,39 @@ public class TgUserService {
         if (lastName == null) return firstName;
 
         return firstName + " " + lastName;
+    }
+
+    public TgUser getOrCreateTgUserAsync(ChosenInlineResult chosenInlineResult) {
+        Long userId = chosenInlineResult.from().id();
+        String fullname = buildFullNameFromUpdate(chosenInlineResult);
+        String username = chosenInlineResult.from().username();
+
+        TgUser newTgUser = TgUser.builder()
+                .id(userId)
+                .fullname(fullname)
+                .username(username)
+                .langCode(chosenInlineResult.from().languageCode())
+                ._active(true)
+                .build();
+
+        return tgUserRepository.save(newTgUser);
+    }
+
+    public String buildFullNameFromUpdate(ChosenInlineResult chosenInlineResult) {
+        String firstName = chosenInlineResult.from().firstName();
+        String lastName = chosenInlineResult.from().lastName();
+
+        if (firstName.length()==1 && lastName == null) {
+            return generateDefaultUsername();
+        }
+
+        if (firstName.length()==1) return lastName;
+        if (lastName == null) return firstName;
+
+        return firstName + " " + lastName;
+    }
+
+    public Optional<TgUser> getFindById(Long id) {
+        return tgUserRepository.findById(id);
     }
 }

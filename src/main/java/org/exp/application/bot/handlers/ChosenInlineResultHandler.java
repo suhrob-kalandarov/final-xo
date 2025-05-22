@@ -12,6 +12,9 @@ import org.springframework.stereotype.Component;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+import java.time.LocalDateTime;
+import java.util.Optional;
+
 @Slf4j
 @Component
 @RequiredArgsConstructor
@@ -34,10 +37,17 @@ public class ChosenInlineResultHandler implements DataHandler<ChosenInlineResult
             multiGame.setInlineMessageId(chosenInlineResult.inlineMessageId());
             multiGame.setStatus(GameStatus.PROGRESS);
 
-            TgUser user = tgUserService.getById(chosenInlineResult.from().id());
-            multiGame.setPlayerX(user);
+            Optional<TgUser> optionalTgUser = tgUserService.getFindById(chosenInlineResult.from().id());
+            TgUser tgUser;
+            if (optionalTgUser.isEmpty()) {
+                tgUser = tgUserService.getOrCreateTgUserAsync(chosenInlineResult);
+            } else {
+                tgUser = optionalTgUser.get();
+            }
+            multiGame.setPlayerX(tgUser);
+            multiGame.set_active(true);
             multiGame.setInTurn(Turn.X);
-
+            multiGame.setUpdatedAt(LocalDateTime.now());
             gameService.save(multiGame);
         } catch (Exception e) {
             log.error("ChosenInlineResult handle error: {}", e.getMessage());
