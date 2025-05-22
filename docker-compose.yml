@@ -1,7 +1,6 @@
-#version: '3.8'
-
+version: '3.8'
 services:
-  postgres:
+  game_db:
     image: postgres:15
     container_name: game_db
     restart: always
@@ -13,13 +12,15 @@ services:
       - postgres_data:/var/lib/postgresql/data
     ports:
       - "5432:5432"
+    networks:
+      - app-network
 
-  telegram-bot:
+  game_bot:
     build: .
     container_name: game_bot
     restart: always
     depends_on:
-      - postgres
+      - game_db
     environment:
       SPRING_PROFILES_ACTIVE: prod
       SPRING_DATASOURCE_URL: ${SPRING_DATASOURCE_URL}
@@ -28,6 +29,12 @@ services:
       TELEGRAM_BOT_TOKEN: ${TELEGRAM_BOT_TOKEN}
     ports:
       - "8080:8080"
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
 
 volumes:
   postgres_data:
