@@ -9,35 +9,76 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout source
-        uses: actions/checkout@v3
+      - name: Repositoriyni olish
+        uses: actions/checkout@v4
 
-      - name: Set up JDK 21
-        uses: actions/setup-java@v3
+      - name: JDK 21 ni o'rnatish
+        uses: actions/setup-java@v4
         with:
           java-version: '21'
           distribution: 'temurin'
 
-      - name: Build .jar file
+      - name: JAR faylini yaratish
         run: ./mvnw clean package -DskipTests
 
-      - name: Copy to server and deploy
-        uses: appleboy/scp-action@v0.1.3
+      - name: Fayllarni tekshirish
+        run: |
+          echo "target katalogi tarkibi:"
+          ls -l target/ || echo "target/ katalogi topilmadi"
+          echo "docker-compose.yml fayli:"
+          ls -l docker-compose.yml || echo "docker-compose.yml fayli topilmadi"
+
+      - name: Serverda maqsadli katalog yaratish
+        uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.SERVER_HOST }}
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SERVER_SSH_KEY }}
-          source: "target/app.jar"
-          target: "/home/ubuntu/final-xo/target"
+          script: |
+            mkdir -p /home/ubuntu/final-xo
+            # Docker guruhiga qo'shish (har safar xavfsiz bo'lish uchun)
+            sudo usermod -aG docker $USER
 
-      - name: SSH deploy on server
-        uses: appleboy/ssh-action@v0.1.6
+      - name: Fayllarni serverga ko'chirish
+        uses: appleboy/scp-action@v0.1.4
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SERVER_SSH_KEY }}
+          source: "target/app.jar,docker-compose.yml"
+          target: /home/ubuntu/final-xo
+          port: 22
+          timeout: 30s
+          command_timeout: 10m
+          debug: true
+          strip_components: 0
+          overwrite: true
+
+      - name: Serverda deploy qilish
+        uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.SERVER_HOST }}
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SERVER_SSH_KEY }}
           script: |
             cd ~/final-xo
-            git pull
-            docker compose down
-            docker compose up --build -d
+
+            # Fayllarni tekshirish
+            ls -l /home/ubuntu/final-xo || echo "final-xo katalogida fayllar topilmadi"
+
+            # .env faylini yaratish
+            echo "POSTGRES_DB=${{ secrets.POSTGRES_DB }}" > .env
+            echo "POSTGRES_USER=${{ secrets.POSTGRES_USER }}" >> .env
+            echo "POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}" >> .env
+            echo "SPRING_DATASOURCE_URL=${{ secrets.SPRING_DATASOURCE_URL }}" >> .env
+            echo "SPRING_DATASOURCE_USERNAME=${{ secrets.SPRING_DATASOURCE_USERNAME }}" >> .env
+            echo "SPRING_DATASOURCE_PASSWORD=${{ secrets.SPRING_DATASOURCE_PASSWORD }}" >> .env
+            echo "TELEGRAM_BOT_TOKEN=${{ secrets.TELEGRAM_BOT_TOKEN }}" >> .env
+
+            # dos2unix o'rnatish va .env faylini tozalash
+            sudo apt-get update && sudo apt-get install -y dos2unix
+            dos2unix .env
+
+            # Docker Compose orqali konteynerlarni yangilash
+            sudo docker-compose down
+            sudo docker-compose up --build -d
