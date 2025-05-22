@@ -36,8 +36,8 @@ jobs:
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SERVER_SSH_KEY }}
           source: |
-            target/app.jar
-            docker-compose.yml
+              target/app.jar
+              docker-compose.yml
           target: /home/ubuntu/my-new-folder
           port: 22
           timeout: 30s
