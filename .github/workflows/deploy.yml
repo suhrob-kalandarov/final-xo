@@ -27,6 +27,8 @@ jobs:
           ls -l target/ || echo "target/ katalogi topilmadi"
           echo "docker-compose.yml fayli:"
           ls -l docker-compose.yml || echo "docker-compose.yml fayli topilmadi"
+          echo "Dockerfile fayli:"
+          ls -l Dockerfile || echo "Dockerfile fayli topilmadi"
 
       - name: Serverda maqsadli katalog yaratish
         uses: appleboy/ssh-action@v1.0.3
@@ -36,8 +38,11 @@ jobs:
           key: ${{ secrets.SERVER_SSH_KEY }}
           script: |
             mkdir -p /home/ubuntu/final-xo
-            # Docker guruhiga qo'shish (har safar xavfsiz bo'lish uchun)
             sudo usermod -aG docker $USER
+            # Eski konteynerlarni tozalash
+            cd /home/ubuntu/final-xo
+            sudo docker-compose down || echo "docker-compose down muvaffaqiyatsiz"
+            sudo docker rm -f $(sudo docker ps -aq) || echo "Konteynerlarni o'chirish muvaffaqiyatsiz"
 
       - name: Fayllarni serverga ko'chirish
         uses: appleboy/scp-action@v0.1.4
@@ -45,7 +50,7 @@ jobs:
           host: ${{ secrets.SERVER_HOST }}
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SERVER_SSH_KEY }}
-          source: "target/app.jar,docker-compose.yml"
+          source: "target/app.jar,docker-compose.yml,Dockerfile"
           target: /home/ubuntu/final-xo
           port: 22
           timeout: 30s
@@ -65,14 +70,15 @@ jobs:
 
             # Fayllarni tekshirish
             ls -l /home/ubuntu/final-xo || echo "final-xo katalogida fayllar topilmadi"
+            cat /home/ubuntu/final-xo/.env || echo ".env fayli topilmadi"
 
             # .env faylini yaratish
             echo "POSTGRES_DB=${{ secrets.POSTGRES_DB }}" > .env
             echo "POSTGRES_USER=${{ secrets.POSTGRES_USER }}" >> .env
             echo "POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}" >> .env
-            echo "SPRING_DATASOURCE_URL=${{ secrets.SPRING_DATASOURCE_URL }}" >> .env
-            echo "SPRING_DATASOURCE_USERNAME=${{ secrets.SPRING_DATASOURCE_USERNAME }}" >> .env
-            echo "SPRING_DATASOURCE_PASSWORD=${{ secrets.SPRING_DATASOURCE_PASSWORD }}" >> .env
+            echo "SPRING_DATASOURCE_URL=jdbc:postgresql://game_db:5432/${{ secrets.POSTGRES_DB }}" >> .env
+            echo "SPRING_DATASOURCE_USERNAME=${{ secrets.POSTGRES_USER }}" >> .env
+            echo "SPRING_DATASOURCE_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}" >> .env
             echo "TELEGRAM_BOT_TOKEN=${{ secrets.TELEGRAM_BOT_TOKEN }}" >> .env
 
             # dos2unix o'rnatish va .env faylini tozalash
@@ -82,3 +88,10 @@ jobs:
             # Docker Compose orqali konteynerlarni yangilash
             sudo docker-compose down
             sudo docker-compose up --build -d
+
+            # Konteynerlar holatini tekshirish
+            sudo docker ps -a
+            # game_bot loglari
+            sudo docker logs game_bot || echo "game_bot konteyneri topilmadi"
+            # game_db loglari
+            sudo docker logs game_db || echo "game_db konteyneri topilmadi"
