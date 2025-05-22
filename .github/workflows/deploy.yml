@@ -21,16 +21,18 @@ jobs:
       - name: Build .jar file
         run: ./mvnw clean package -DskipTests
 
-      - name: Copy to server and deploy
+      - name: Copy files to server
         uses: appleboy/scp-action@v0.1.3
         with:
           host: ${{ secrets.SERVER_HOST }}
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SERVER_SSH_KEY }}
-          source: "target/app.jar"
-          target: "/home/ubuntu/final-xo/target"
+          source: |
+            target/app.jar
+            docker-compose.yml
+          target: /home/ubuntu/final-xo
 
-      - name: SSH deploy on server
+      - name: SSH and deploy on server
         uses: appleboy/ssh-action@v0.1.6
         with:
           host: ${{ secrets.SERVER_HOST }}
@@ -38,6 +40,15 @@ jobs:
           key: ${{ secrets.SERVER_SSH_KEY }}
           script: |
             cd ~/final-xo
+
+            echo "POSTGRES_DB=${{ secrets.POSTGRES_DB }}" > .env
+            echo "POSTGRES_USER=${{ secrets.POSTGRES_USER }}" >> .env
+            echo "POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}" >> .env
+            echo "SPRING_DATASOURCE_URL=${{ secrets.SPRING_DATASOURCE_URL }}" >> .env
+            echo "SPRING_DATASOURCE_USERNAME=${{ secrets.SPRING_DATASOURCE_USERNAME }}" >> .env
+            echo "SPRING_DATASOURCE_PASSWORD=${{ secrets.SPRING_DATASOURCE_PASSWORD }}" >> .env
+            echo "TELEGRAM_BOT_TOKEN=${{ secrets.TELEGRAM_BOT_TOKEN }}" >> .env
+
             git pull
             docker compose down
             docker compose up --build -d
