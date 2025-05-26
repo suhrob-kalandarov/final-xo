@@ -13,10 +13,12 @@ import java.util.List;
 @RequiredArgsConstructor
 public class LangLoader {
 
-    public List<Translation> save2LangMsgs(){
-        Language lang = DataLoader.lang1;
-        Language lang2 = DataLoader.lang2;
+    Language lang = DataLoader.lang1;
+    Language lang2 = DataLoader.lang2;
+    Language lang3 = DataLoader.lang3;
+    Language lang4 = DataLoader.lang4;
 
+    public List<Translation> save2LangMsgs(){
         return List.of(
                 Translation.builder()
                         ._active(true)
@@ -421,6 +423,420 @@ public class LangLoader {
                                 Канал бота: @HowdyBots
                                 """
                         ).build()
+        );
+    }
+
+    public List<Translation> saveUA2LangMsgs() {
+        return List.of(
+                Translation.builder()
+                        ._active(true)
+                        .menu(SessionMenu.INFO)
+                        .language(lang3)
+                        .key(Constants.INFO_MENU_MSG)
+                        .value("""
+                ❗O'ynash
+                Bot bilan o'ynash uchun faqat taqdim etilgan klaviaturadan foydalanishingiz mumkin.
+
+                🕹Qanday o'ynash kerak
+                O'yin davomida sizga katakchalarga mos keluvchi tugmalar beriladi. Harakat qilish uchun ⬜ tugmasini bosing.
+
+                👥Ko'p o'yinchi
+                Agar o'yin 5 daqiqa ichida tugamasa, u bekor qilinadi va xabarlar almashtiriladi.
+
+                📌Bot haqida
+                Biz matnli xabarlarni saqlamaymiz yoki ularga javob bermaymiz!
+
+                Bot kanali: @HowdyBots
+                """
+                        ).build(),
+
+                Translation.builder()
+                        ._active(true)
+                        .menu(SessionMenu.INFO)
+                        .language(lang4)
+                        .key(Constants.INFO_MENU_MSG)
+                        .value("""
+                ❗መጫወት
+                ከቦት ጋር ለመጫወት የቀረበውን ቁልፍ ሰሌዳ ብቻ መጠቀም ይችላሉ።
+
+                🕹እንዴት መጫወት እንደሚቻል
+                በጨዋታው ወቅት፣ ከሴሎች ጋር የሚዛመዱ ቁልፎች ይሰጥዎታል። እርምጃ ለመፈጸም የ ⬜ ቁልፍን ይጫኑ።
+
+                👥ባ� personallyብ ተጫዋች
+                ጨዋታው በ5 ደቂቃዎች ውስጥ ካልተጠናቀቀ፣ ይሰረዛል፣ እና መልእክቶቹ ይተካሉ።
+
+                📌ስለ ቦት
+                የጽሑፍ መልእክቶችን አንቀበልም ወይም አንመልስም!
+
+                የቦት ቻናል፡ @HowdyBots
+                """
+                        ).build(),
+
+                /// Uzbek
+                Translation.builder()
+                        ._active(true)
+                        .menu(SessionMenu.HOME)
+                        .language(lang3)
+                        .key(Constants.HOME_MSG)
+                        .value("👤%s\nO'yinga xush kelibsiz! 🎮")
+                        .build(),
+
+                Translation.builder()
+                        ._active(true)
+                        .menu(SessionMenu.HOME)
+                        .language(lang3)
+                        .key(Constants.PLAY_WITH_BOT_BTN)
+                        .value("🤖Bot bilan o'ynash")
+                        .build(),
+
+                Translation.builder()
+                        ._active(true)
+                        .menu(SessionMenu.HOME)
+                        .language(lang3)
+                        .key(Constants.PLAY_WITH_FRIEND_BTN)
+                        .value("👫Do'st bilan o'ynash")
+                        .build(),
+
+                Translation.builder()
+                        ._active(true)
+                        .menu(SessionMenu.HOME)
+                        .language(lang3)
+                        .key(Constants.LANGUAGE_BTN)
+                        .value("🌐Til")
+                        .build(),
+
+                Translation.builder()
+                        ._active(true)
+                        .menu(SessionMenu.LANGUAGE)
+                        .language(lang3)
+                        .key(Constants.LANGUAGE_MSG)
+                        .value("🌍Tilni tanlang:")
+                        .build(),
+
+                Translation.builder()
+                        ._active(true)
+                        .menu(SessionMenu.HOME)
+                        .language(lang3)
+                        .key(Constants.SUPPORT_BTN)
+                        .value("📩Yordam")
+                        .build(),
+
+                Translation.builder()
+                        ._active(true)
+                        .menu(SessionMenu.HOME)
+                        .language(lang3)
+                        .key(Constants.BOT_GAME_STATISTICS_MSG)
+                        .value("""
+                <b>Statistika:</b>
+                <pre>%s</pre>""")
+                        .build(),
+
+                Translation.builder()
+                        ._active(true)
+                        .menu(SessionMenu.BOT_GAME)
+                        .language(lang3)
+                        .key(Constants.PLAY)
+                        .value("🤖O'ynash")
+                        .build(),
+
+                Translation.builder()
+                        ._active(true)
+                        .menu(SessionMenu.BOT_GAME)
+                        .language(lang3)
+                        .key(Constants.DIFFICULTY_LEVEL_BTN)
+                        .value("😺Qiyinlik darajasi💀")
+                        .build(),
+
+                Translation.builder()
+                        ._active(true)
+                        .menu(SessionMenu.DIFFICULTY)
+                        .language(lang3)
+                        .key(Constants.DIFFICULTY_LEVEL_MSG)
+                        .value("🎚️Qiyinlik darajasini tanlang:")
+                        .build(),
+
+                Translation.builder()
+                        ._active(true)
+                        .menu(SessionMenu.DIFFICULTY)
+                        .language(lang3)
+                        .key(Constants.LEVEL_EASY)
+                        .value("😺Oson")
+                        .build(),
+
+                Translation.builder()
+                        ._active(true)
+                        .menu(SessionMenu.DIFFICULTY)
+                        .language(lang3)
+                        .key(Constants.LEVEL_MEDIUM)
+                        .value("🧠O'rta")
+                        .build(),
+
+                Translation.builder()
+                        ._active(true)
+                        .menu(SessionMenu.DIFFICULTY)
+                        .language(lang3)
+                        .key(Constants.LEVEL_HARD)
+                        .value("😈Qiyin")
+                        .build(),
+
+                Translation.builder()
+                        ._active(true)
+                        .menu(SessionMenu.DIFFICULTY)
+                        .language(lang3)
+                        .key(Constants.LEVEL_EXTREME)
+                        .value("💀Ekstremal")
+                        .build(),
+
+                Translation.builder()
+                        ._active(true)
+                        .menu(SessionMenu.SIGN)
+                        .language(lang3)
+                        .key(Constants.SIGN_MENU_MSG)
+                        .value("❓Belgingizni tanlang:")
+                        .build(),
+
+                Translation.builder()
+                        ._active(true)
+                        .menu(SessionMenu.BOARD)
+                        .language(lang3)
+                        .key(Constants.BOARD_MENU_MSG)
+                        .value("""
+                🚀O'yin boshlandi!
+                Siz: %s
+                Bot: %s
+                """)
+                        .build(),
+
+                Translation.builder()
+                        ._active(true)
+                        .menu(SessionMenu.BOARD)
+                        .language(lang3)
+                        .key(Constants.BOARD_MSG)
+                        .value("Taxta:")
+                        .build(),
+
+                Translation.builder()
+                        ._active(true)
+                        .menu(SessionMenu.BOARD)
+                        .language(lang3)
+                        .key(Constants.DRAW_MSG)
+                        .value("🤝Durrang!")
+                        .build(),
+
+                Translation.builder()
+                        ._active(true)
+                        .menu(SessionMenu.BOARD)
+                        .language(lang3)
+                        .key(Constants.YOU_WON_MSG)
+                        .value("🎉Siz yutdingiz!")
+                        .build(),
+
+                Translation.builder()
+                        ._active(true)
+                        .menu(SessionMenu.BOARD)
+                        .language(lang3)
+                        .key(Constants.YOU_LOST_MSG)
+                        .value("💔Siz yutqazdingiz!")
+                        .build(),
+
+                Translation.builder()
+                        ._active(true)
+                        .menu(SessionMenu.BOT_GAME)
+                        .language(lang3)
+                        .key(Constants.BACK_BTN)
+                        .value("🔙Orqaga")
+                        .build(),
+
+                Translation.builder()
+                        ._active(true)
+                        .menu(SessionMenu.NONE)
+                        .language(lang3)
+                        .key(Constants.WARNING_MSG)
+                        .value("⚠️Noto'g'ri harakat. Qayta urinib ko'ring!")
+                        .build(),
+
+                /// Amharic
+                Translation.builder()
+                        ._active(true)
+                        .menu(SessionMenu.HOME)
+                        .language(lang4)
+                        .key(Constants.HOME_MSG)
+                        .value("👤%s\nወደ ጨዋታው እንኳን በደህና መጡ! 🎮")
+                        .build(),
+
+                Translation.builder()
+                        ._active(true)
+                        .menu(SessionMenu.HOME)
+                        .language(lang4)
+                        .key(Constants.PLAY_WITH_BOT_BTN)
+                        .value("🤖ከቦት ጋር መጫወት")
+                        .build(),
+
+                Translation.builder()
+                        ._active(true)
+                        .menu(SessionMenu.HOME)
+                        .language(lang4)
+                        .key(Constants.PLAY_WITH_FRIEND_BTN)
+                        .value("👫ከጓደኛ ጋር መጫወት")
+                        .build(),
+
+                Translation.builder()
+                        ._active(true)
+                        .menu(SessionMenu.HOME)
+                        .language(lang4)
+                        .key(Constants.LANGUAGE_BTN)
+                        .value("🌐ቋንቋ")
+                        .build(),
+
+                Translation.builder()
+                        ._active(true)
+                        .menu(SessionMenu.LANGUAGE)
+                        .language(lang4)
+                        .key(Constants.LANGUAGE_MSG)
+                        .value("🌍ቋንቋ ይምረጡ፡")
+                        .build(),
+
+                Translation.builder()
+                        ._active(true)
+                        .menu(SessionMenu.HOME)
+                        .language(lang4)
+                        .key(Constants.SUPPORT_BTN)
+                        .value("📩ድጋፍ")
+                        .build(),
+
+                Translation.builder()
+                        ._active(true)
+                        .menu(SessionMenu.HOME)
+                        .language(lang4)
+                        .key(Constants.BOT_GAME_STATISTICS_MSG)
+                        .value("""
+                <b>ስታቲስቲክስ፡</b>
+                <pre>%s</pre>""")
+                        .build(),
+
+                Translation.builder()
+                        ._active(true)
+                        .menu(SessionMenu.BOT_GAME)
+                        .language(lang4)
+                        .key(Constants.PLAY)
+                        .value("🤖መጫወት")
+                        .build(),
+
+                Translation.builder()
+                        ._active(true)
+                        .menu(SessionMenu.BOT_GAME)
+                        .language(lang4)
+                        .key(Constants.DIFFICULTY_LEVEL_BTN)
+                        .value("😺የችግር ደረጃ💀")
+                        .build(),
+
+                Translation.builder()
+                        ._active(true)
+                        .menu(SessionMenu.DIFFICULTY)
+                        .language(lang4)
+                        .key(Constants.DIFFICULTY_LEVEL_MSG)
+                        .value("🎚️የችግር ደረጃ ይምረጡ፡")
+                        .build(),
+
+                Translation.builder()
+                        ._active(true)
+                        .menu(SessionMenu.DIFFICULTY)
+                        .language(lang4)
+                        .key(Constants.LEVEL_EASY)
+                        .value("😺ቀላል")
+                        .build(),
+
+                Translation.builder()
+                        ._active(true)
+                        .menu(SessionMenu.DIFFICULTY)
+                        .language(lang4)
+                        .key(Constants.LEVEL_MEDIUM)
+                        .value("🧠መካከለኛ")
+                        .build(),
+
+                Translation.builder()
+                        ._active(true)
+                        .menu(SessionMenu.DIFFICULTY)
+                        .language(lang4)
+                        .key(Constants.LEVEL_HARD)
+                        .value("😈ከባድ")
+                        .build(),
+
+                Translation.builder()
+                        ._active(true)
+                        .menu(SessionMenu.DIFFICULTY)
+                        .language(lang4)
+                        .key(Constants.LEVEL_EXTREME)
+                        .value("💀እጅግ ከባድ")
+                        .build(),
+
+                Translation.builder()
+                        ._active(true)
+                        .menu(SessionMenu.SIGN)
+                        .language(lang4)
+                        .key(Constants.SIGN_MENU_MSG)
+                        .value("❓የእርስዎን ምልክት ይምረጡ፡")
+                        .build(),
+
+                Translation.builder()
+                        ._active(true)
+                        .menu(SessionMenu.BOARD)
+                        .language(lang4)
+                        .key(Constants.BOARD_MENU_MSG)
+                        .value("""
+                🚀ጨዋታው ተጀምሯል!
+                እርስዎ፡ %s
+                ቦት፡ %s
+                """)
+                        .build(),
+
+                Translation.builder()
+                        ._active(true)
+                        .menu(SessionMenu.BOARD)
+                        .language(lang4)
+                        .key(Constants.BOARD_MSG)
+                        .value("ቦርድ፡")
+                        .build(),
+
+                Translation.builder()
+                        ._active(true)
+                        .menu(SessionMenu.BOARD)
+                        .language(lang4)
+                        .key(Constants.DRAW_MSG)
+                        .value("🤝እኩል ተጠናቋል!")
+                        .build(),
+
+                Translation.builder()
+                        ._active(true)
+                        .menu(SessionMenu.BOARD)
+                        .language(lang4)
+                        .key(Constants.YOU_WON_MSG)
+                        .value("🎉እርስዎ አሸንፈዋል!")
+                        .build(),
+
+                Translation.builder()
+                        ._active(true)
+                        .menu(SessionMenu.BOARD)
+                        .language(lang4)
+                        .key(Constants.YOU_LOST_MSG)
+                        .value("💔እርስዎ ተሸንፈዋል!")
+                        .build(),
+
+                Translation.builder()
+                        ._active(true)
+                        .menu(SessionMenu.BOT_GAME)
+                        .language(lang4)
+                        .key(Constants.BACK_BTN)
+                        .value("🔙ወደ ኋላ")
+                        .build(),
+
+                Translation.builder()
+                        ._active(true)
+                        .menu(SessionMenu.NONE)
+                        .language(lang4)
+                        .key(Constants.WARNING_MSG)
+                        .value("⚠️ተገቢ ያልሆነ እርምጃ። እንደገና ይሞክሩ!")
+                        .build()
         );
     }
 }

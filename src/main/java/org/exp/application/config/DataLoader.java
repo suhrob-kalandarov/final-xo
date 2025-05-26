@@ -19,23 +19,27 @@ public class DataLoader implements CommandLineRunner {
     private final TranslationRepository translationRepository;
     private final LangLoader langLoader;
 
-    public static Language lang1;
-    public static Language lang2;
+    public static Language lang4 = new Language("\uD83C\uDDEA\uD83C\uDDF9", "Ethiopia", "Amharic", "am");
+    public static Language lang3 = new Language("\uD83C\uDDFA\uD83C\uDDFF", "Uzbekistan", "Uzbek", "uz");
+    public static Language lang2 = new Language("\uD83C\uDDF7\uD83C\uDDFA", "Russia", "Русский", "ru");
+    public static Language lang1 = new Language("\uD83C\uDDFA\uD83C\uDDF8", "America", "English", "en");
 
     @Override
     public void run(String... args) throws Exception {
+        long langCount = languageRepository.count();
+        if (langCount == 0) {
+            languageRepository.saveAll(List.of(lang1, lang2, lang3, lang4));
+        }
 
-        if (languageRepository.count() == 0) {
-            //Language lang3 = new Language("\uD83C\uDDFA\uD83C\uDDFF", "Uzbekistan", "Uzbek", "uz");
-            lang2 = new Language("\uD83C\uDDF7\uD83C\uDDFA", "Russia", "Русский", "ru");
-            lang1 = new Language("\uD83C\uDDFA\uD83C\uDDF8", "America", "English", "en");
-
-            //languageRepository.saveAll(List.of(lang, lang2, lang3));
-            languageRepository.saveAll(List.of(lang1, lang2));
+        if (langCount == 2) {
+            languageRepository.saveAll(List.of(lang3, lang4));
+            List<Translation> translations = langLoader.saveUA2LangMsgs();
+            translationRepository.saveAll(translations);
         }
 
         if (translationRepository.count() == 0){
             List<Translation> translations = langLoader.save2LangMsgs();
+            List<Translation> translations2 = langLoader.saveUA2LangMsgs();
             translationRepository.saveAll(translations);
         }
     }
