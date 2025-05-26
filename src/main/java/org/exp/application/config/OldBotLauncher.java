@@ -17,17 +17,23 @@ public class OldBotLauncher implements CommandLineRunner {
     private static final TelegramBot bot = new TelegramBot("7958534479:AAGSkglSMoQgb8tqeco97KKwh0j2sTv3EjU");
 
     private static final String message = """
-            🌟 <b>Bot yangilandi!</b> 🎉 <i>Bu bot endi ishlamaydi, yangi botimizga o‘ting!</i> 🚀
             <blockquote>
+            🇺🇸
             🌟 <b>Bot Updated!</b> 🎉 <i>This bot is no longer active. Switch to our <a href="https://t.me/xoBrainBot">new bot</a> for a better experience!</i> 🚀 #BotUpdate
             </blockquote>
+            
             <blockquote>
+            🇷🇺
             🌟 <b>Бот обновился!</b> 🎉 <i>Этот бот больше не работает. Перейдите на наш <a href="https://t.me/xoBrainBot">новый бот</a> для лучшего опыта!</i> 🚀 #ОбновлениеБота
             </blockquote>
+            
             <blockquote>
+            🇺🇿
             🌟 <b>Bot yangilandi!</b> 🎉 <i>Bu bot endi ishlamaydi. <a href="https://t.me/xoBrainBot">Yangi botimizga</a> o‘ting va tajribani yaxshilang!</i> 🚀 #BotYangilanishi
             </blockquote>
+            
             <blockquote>
+            🇪🇹
             🌟 <b>ቦታችን ተሻሽሏል!</b> 🎉 <i>ይህ ቦት ከእንግዲህ አይሰራም። ለተሻለ ተሞክሮ <a href="https://t.me/xoBrainBot">ወደ አዲሱ ቦታችን</a> ይሸጋገሩ!</i> 🚀 #BotUpdate
             </blockquote>
             """;

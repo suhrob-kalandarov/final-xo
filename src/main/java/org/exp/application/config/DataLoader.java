@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import org.exp.application.models.entity.message.Language;
 import org.exp.application.models.entity.message.Translation;
 import org.exp.application.repositories.common.LanguageRepository;
-import org.exp.application.repositories.common.TgUserRepository;
 import org.exp.application.repositories.common.TranslationRepository;
 import org.exp.application.utils.LangLoader;
 import org.springframework.boot.CommandLineRunner;
