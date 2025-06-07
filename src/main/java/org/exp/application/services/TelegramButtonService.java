@@ -108,7 +108,7 @@ public class TelegramButtonService {
     public InlineKeyboardMarkup endMultiGameBtns() {
         return new InlineKeyboardMarkup(
                 new InlineKeyboardButton("🔄").switchInlineQueryCurrentChat(" play"),
-                new InlineKeyboardButton("🤖").url("https://t.me/" + "xoDemoBot")
+                new InlineKeyboardButton("🤖").url("https://t.me/" + "xoBrainBot")
         );
     }
 
