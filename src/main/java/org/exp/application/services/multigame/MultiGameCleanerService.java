@@ -22,7 +22,7 @@ public class MultiGameCleanerService {
     private final MultiGameRepository gameRepository;
     private final TelegramButtonService buttonService;
 
-    @Scheduled(fixedDelay = 10_000, fixedRate = 40_000)
+    @Scheduled(fixedDelay = 50_000)
     public void cleanExpiredGames() {
         System.err.println("MultiGameCleanerService.cleanExpiredGames");
         List<MultiGame> games = gameRepository.findAllByStatusIn(
