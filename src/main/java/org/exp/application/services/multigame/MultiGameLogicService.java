@@ -16,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -53,21 +54,21 @@ public class MultiGameLogicService {
         // 🔒 Qo‘shimcha himoya: PlayerO hali yo‘q va PlayerX o‘zi yana bosmoqda
         if (game.getPlayerO() == null && userId.equals(game.getPlayerX().getId())) {
             telegramBot.execute(new AnswerCallbackQuery(callbackQuery.id())
-                    .text("Wait for second player to join!")
-                    .showAlert(true));
-            return;
-        }
-
-        // 1. O'yinchi tekshiruvi (gamega tegishliligi)
-        if (game.getPlayerX() == null || game.getPlayerO() == null) {
-            telegramBot.execute(new AnswerCallbackQuery(callbackQuery.id())
                     .text("Game is not ready yet! \nWaiting for second player...")
                     .showAlert(true));
             return;
         }
 
+        /*// 1. O'yinchi tekshiruvi (gamega tegishliligi)
+        if (game.getPlayerX() == null || game.getPlayerO() == null) {
+            telegramBot.execute(new AnswerCallbackQuery(callbackQuery.id())
+                    .text("Game is not ready yet! \nWaiting for second player...")
+                    .showAlert(true));
+            return;
+        }*/
+
         // 2. O'yinchi bu o'yinda o'ynayotganligini tekshirish
-        if (!userId.equals(game.getPlayerX().getId()) && !userId.equals(game.getPlayerO().getId())) {
+        if (!userId.equals(game.getPlayerX().getId()) && !userId.equals(Objects.requireNonNull(game.getPlayerO()).getId())) {
             telegramBot.execute(new AnswerCallbackQuery(callbackQuery.id())
                     .text("It's not your game!")
                     .showAlert(true));
@@ -75,8 +76,7 @@ public class MultiGameLogicService {
         }
 
         // 3. Navbat tekshiruvi
-        if ((game.getInTurn() == Turn.X && !userId.equals(game.getPlayerX().getId())) ||
-                game.getPlayerO() != null && (game.getInTurn() == Turn.O && !userId.equals(game.getPlayerO().getId()))) {
+        if (game.getInTurn() == Turn.X && !userId.equals(game.getPlayerX().getId()) || game.getInTurn() == Turn.O && !userId.equals(game.getPlayerO().getId())) {
 
             telegramBot.execute(new AnswerCallbackQuery(callbackQuery.id())
                     .text("Not your turn! Wait for your opponent.")
