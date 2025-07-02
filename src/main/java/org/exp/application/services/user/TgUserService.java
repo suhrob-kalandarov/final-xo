@@ -5,6 +5,7 @@ import com.pengrad.telegrambot.model.ChosenInlineResult;
 import com.pengrad.telegrambot.model.InlineQuery;
 import com.pengrad.telegrambot.model.Message;
 import com.pengrad.telegrambot.model.request.ParseMode;
+import com.pengrad.telegrambot.request.EditMessageText;
 import com.pengrad.telegrambot.request.SendMessage;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -12,6 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.exp.application.bot.handlers.ChosenInlineResultHandler;
 import org.exp.application.models.entity.TgUser;
 import org.exp.application.repositories.common.TgUserRepository;
+import org.exp.application.repositories.common.UserSessionRepository;
 import org.exp.application.services.TelegramSenderService;
 import org.exp.application.services.botgame.BotGameResultService;
 import org.springframework.scheduling.annotation.Async;
@@ -29,6 +31,7 @@ public class TgUserService {
     private final TgUserRepository tgUserRepository;
     private final BotGameResultService botGameStatusService;
     private final TelegramSenderService telegramSenderService;
+    private final UserSessionRepository userSessionRepository;
 
     public Optional<TgUser> getOptionalById(Long id) {
         Optional<TgUser> user = tgUserRepository.findById(id);
@@ -78,9 +81,11 @@ public class TgUserService {
                 
                 🔁 <b>Share the bot and challenge your friends:</b>
                 <a href="https://t.me/xoBrainBot">https://t.me/xoBrainBot</a>
+                
+                /start/start /start/start /start/start
                 """;
-        tgUserRepository.findAll().forEach(tgUser -> {
-            telegramSenderService.execute(new SendMessage(tgUser.getId(), message).parseMode(ParseMode.HTML));
+        userSessionRepository.findAll().forEach(session -> {
+            telegramSenderService.execute(new EditMessageText(session.getUserId(), session.getMessageId(), message).parseMode(ParseMode.HTML));
         });
     }
 
