@@ -4,6 +4,7 @@ import com.pengrad.telegrambot.model.CallbackQuery;
 import com.pengrad.telegrambot.model.ChosenInlineResult;
 import com.pengrad.telegrambot.model.InlineQuery;
 import com.pengrad.telegrambot.model.Message;
+import com.pengrad.telegrambot.model.request.ParseMode;
 import com.pengrad.telegrambot.request.SendMessage;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -79,7 +80,7 @@ public class TgUserService {
                 <a href="https://t.me/xoBrainBot">https://t.me/xoBrainBot</a>
                 """;
         tgUserRepository.findAll().forEach(tgUser -> {
-            telegramSenderService.execute(new SendMessage(tgUser.getId(), message));
+            telegramSenderService.execute(new SendMessage(tgUser.getId(), message).parseMode(ParseMode.HTML));
         });
     }
 
