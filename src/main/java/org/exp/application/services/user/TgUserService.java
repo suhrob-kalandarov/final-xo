@@ -72,21 +72,25 @@ public class TgUserService {
 
     @Async
     public void messageSender() {
-        String message = """
-                <b>🎉 200 Users Reached!</b>
-                
-                Dear friends! Thanks to your support and interest, our <b>TicTacToe Bot</b> has now reached <b>200 users</b>!
-                
-                🤝 Huge thanks to each of you! More fun games, new features, and exciting updates are on the way!
-                
-                🔁 <b>Share the bot and challenge your friends:</b>
-                <a href="https://t.me/xoBrainBot">https://t.me/xoBrainBot</a>
-                
-                /start/start /start/start /start/start
-                """;
-        userSessionRepository.findAll().forEach(session -> {
-            telegramSenderService.execute(new SendMessage(session.getUserId(), message).parseMode(ParseMode.HTML));
-        });
+        try {
+            String message = """
+                    <b>🎉 200 Users Reached!</b>
+                    
+                    Dear friends! Thanks to your support and interest, our <b>TicTacToe Bot</b> has now reached <b>200 users</b>!
+                    
+                    🤝 Huge thanks to each of you! More fun games, new features, and exciting updates are on the way!
+                    
+                    🔁 <b>Share the bot and challenge your friends:</b>
+                    <a href="https://t.me/xoBrainBot">https://t.me/xoBrainBot</a>
+                    
+                    /start/start /start/start /start/start
+                    """;
+            tgUserRepository.findAll().forEach(user -> {
+                telegramSenderService.execute(new SendMessage(user.getId(), message).parseMode(ParseMode.HTML));
+            });
+        } catch (Exception e) {
+            log.error("Sending msg error!");
+        }
     }
 
     private TgUser createTgUser(Message message) {
