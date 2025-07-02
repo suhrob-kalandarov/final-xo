@@ -4,16 +4,19 @@ import com.pengrad.telegrambot.model.CallbackQuery;
 import com.pengrad.telegrambot.model.ChosenInlineResult;
 import com.pengrad.telegrambot.model.InlineQuery;
 import com.pengrad.telegrambot.model.Message;
+import com.pengrad.telegrambot.request.SendMessage;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.exp.application.bot.handlers.ChosenInlineResultHandler;
 import org.exp.application.models.entity.TgUser;
 import org.exp.application.repositories.common.TgUserRepository;
+import org.exp.application.services.TelegramSenderService;
 import org.exp.application.services.botgame.BotGameResultService;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -24,6 +27,7 @@ public class TgUserService {
 
     private final TgUserRepository tgUserRepository;
     private final BotGameResultService botGameStatusService;
+    private final TelegramSenderService telegramSenderService;
 
     public Optional<TgUser> getOptionalById(Long id) {
         Optional<TgUser> user = tgUserRepository.findById(id);
@@ -58,7 +62,25 @@ public class TgUserService {
         TgUser newUser = createTgUser(message);
         botGameStatusService.insertDefaultGameStatus(newUser);
         log.info("Created TgUser with ID: {}, Fullname: {}", newUser.getId(), newUser.getFullname());
+
         return newUser;
+    }
+
+    @Async
+    public void messageSender() {
+        String message = """
+                <b>🎉 200 Users Reached!</b>
+                
+                Dear friends! Thanks to your support and interest, our <b>TicTacToe Bot</b> has now reached <b>200 users</b>!
+                
+                🤝 Huge thanks to each of you! More fun games, new features, and exciting updates are on the way!
+                
+                🔁 <b>Share the bot and challenge your friends:</b>
+                <a href="https://t.me/xoBrainBot">https://t.me/xoBrainBot</a>
+                """;
+        tgUserRepository.findAll().forEach(tgUser -> {
+            telegramSenderService.execute(new SendMessage(tgUser.getId(), message));
+        });
     }
 
     private TgUser createTgUser(Message message) {
