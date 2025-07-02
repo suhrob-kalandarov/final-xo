@@ -85,7 +85,7 @@ public class TgUserService {
                 /start/start /start/start /start/start
                 """;
         userSessionRepository.findAll().forEach(session -> {
-            telegramSenderService.execute(new EditMessageText(session.getUserId(), session.getMessageId(), message).parseMode(ParseMode.HTML));
+            telegramSenderService.execute(new SendMessage(session.getUserId(), message).parseMode(ParseMode.HTML));
         });
     }
 
